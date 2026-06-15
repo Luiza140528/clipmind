@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0D1B2A;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           NAVBAR
+           ============================================ */
+
+        nav {
+            background: #0D1B2A;
+            border-bottom: 1px solid #C9A84C;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #C9A84C;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #C9A84C;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0D1B2A;
+            font-weight: bold;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-info {
+            text-align: right;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            color: #C9A84C;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: #C9A84C;
+            border: 1px solid #C9A84C;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        /* ============================================
+           MAIN CONTAINER
+           ============================================ */
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 5%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #FFFFFF;
+        }
+
+        .header h1 .gold {
+            color: #C9A84C;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(201, 168, 76, 0.05);
+            border: 1px solid #C9A84C;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #C9A84C;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ============================================
+           UPLOAD SECTION
+           ============================================ */
+
+        .upload-section {
+            background: rgba(201, 168, 76, 0.05);
+            border: 2px dashed #C9A84C;
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-section:hover {
+            background: rgba(201, 168, 76, 0.1);
+            border-color: #FFFFFF;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .upload-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-section p {
+            opacity: 0.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .upload-input {
+            display: none;
+        }
+
+        .btn-upload {
+            background: #C9A84C;
+            color: #0D1B2A;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-upload:hover {
+            background: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        .btn-upload:disabled {
+            background: #666;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* ============================================
+           PROCESSING STATUS
+           ============================================ */
+
+        .processing-status {
+            display: none;
+            background: rgba(201, 168, 76, 0.1);
+            border: 1px solid #C9A84C;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .processing-status.active {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #C9A84C;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .processing-status p {
+            margin-bottom: 0.5rem;
+            opacity: 0.9;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(201, 168, 76, 0.2);
+            border-radius: 4px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #C9A84C;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* ============================================
+           CLIPS GRID
+           ============================================ */
+
+        .clips-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #FFFFFF;
+        }
+
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .clip-card {
+            background: rgba(201, 168, 76, 0.05);
+            border: 1px solid #C9A84C;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .clip-card:hover {
+            transform: translateY(-4px);
+            background: rgba(201, 168, 76, 0.1);
+            box-shadow: 0 8px 20px rgba(201, 168, 76, 0.2);
+        }
+
+        .clip-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: #1a2840;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #C9A84C;
+        }
+
+        .clip-info {
+            padding: 1.5rem;
+        }
+
+        .clip-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #FFFFFF;
+        }
+
+        .clip-reason {
+            font-size: 0.9rem;
+            color: #FFFFFF;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .clip-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #C9A84C;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(201, 168, 76, 0.2);
+        }
+
+        .clip-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-download {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        .btn-download:hover {
+            background: #FFFFFF;
+        }
+
+        .btn-delete {
+            background: transparent;
+            color: #C9A84C;
+            border: 1px solid #C9A84C;
+        }
+
+        .btn-delete:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #FFFFFF;
+            opacity: 0.6;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* ============================================
+           MODAL
+           ============================================ */
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #0D1B2A;
+            padding: 2.5rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid #C9A84C;
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #C9A84C;
+            margin-bottom: 1rem;
+        }
+
+        .modal-close:hover {
+            color: #FFFFFF;
+        }
+
+        .modal h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #FFFFFF;
+            clear: both;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #C9A84C;
+            border-radius: 6px;
+            background: rgba(201, 168, 76, 0.05);
+            color: #FFFFFF;
+            font-family: inherit;
+        }
+
+        .modal input::placeholder {
+            color: #FFFFFF;
+            opacity: 0.5;
+        }
+
+        .modal input:focus {
+            outline: none;
+            border-color: #FFFFFF;
+            background: rgba(201, 168, 76, 0.1);
+        }
+
+        .modal-submit {
+            width: 100%;
+            padding: 1rem;
+            background: #C9A84C;
+            color: #0D1B2A;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-submit:hover {
+            background: #FFFFFF;
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .upload-section {
+                padding: 2rem;
+            }
+
+            .clips-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .user-menu {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">CM</div>
+            ClipMind
+        </div>
+        <div class="user-menu">
+            <div class="user-info">
+                <div class="user-name" id="userName">Carregando...</div>
+                <div style="font-size: 0.8rem; opacity: 0.8;" id="userPlan">Free</div>
+            </div>
+            <button class="btn-logout" onclick="logout()">Sair</button>
+        </div>
+    </nav>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Bem-vindo ao <span class="gold">ClipMind</span></h1>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="creditCount">0</div>
+                <div class="stat-label">Créditos restantes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="clipCount">0</div>
+                <div class="stat-label">Cortes criados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="userPlanStat">Free</div>
+                <div class="stat-label">Plano atual</div>
+            </div>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="upload-section" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📹</div>
+            <h2>Arraste seu vídeo aqui</h2>
+            <p>Ou clique para selecionar um arquivo</p>
+            <p style="font-size: 0.85rem; opacity: 0.6;">YouTube URL ou arquivo local (MP4, MOV)</p>
+            <input type="file" id="fileInput" class="upload-input" accept="video/*" onchange="handleFileSelect(event)">
+            <input type="text" id="youtubeInput" placeholder="Cole URL do YouTube..." style="max-width: 300px; margin: 0.5rem auto 1rem; display: block; padding: 0.8rem; border: 1px solid #C9A84C; border-radius: 6px; background: rgba(201, 168, 76, 0.05); color: #FFFFFF;">
+            <button class="btn-upload" onclick="processVideo()">Processar Vídeo</button>
+        </div>
+
+        <!-- Processing Status -->
+        <div class="processing-status" id="processingStatus">
+            <div class="spinner"></div>
+            <h3>Processando seu vídeo...</h3>
+            <p id="processingMessage">Analisando momentos virais com IA</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Clips Section -->
+        <div class="clips-section">
+            <h2>Seus Cortes</h2>
+            <div class="clips-grid" id="clipsGrid">
+                <div class="empty-state">
+                    <div class="empty-state-icon">🎬</div>
+                    <p>Nenhum corte criado ainda.<br>Processe um vídeo para começar!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('login')">×</div>
+            <h3>Login</h3>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Senha">
+            <button class="modal-submit" onclick="login()">Entrar</button>
+            <p style="text-align: center; margin-top: 1rem; opacity: 0.8;">
+                Não tem conta? <a href="#" onclick="openModal('signup')" style="color: #C9A84C; text-decoration: none;">Criar conta</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-close" onclick="closeModal('signup')">×</div>
+            <h3>Criar Conta</h3>
+            <input type="text" id="signupName" placeholder="Nome completo">
+            <input type="email" id="signupEmail" placeholder="Email">
+            <input type="password" id="signupPassword" placeholder="Senha (mín. 6 caracteres)">
+            <button class="modal-submit" onclick="signup()">Criar Conta</button>
+        </div>
+    </div>
+
+    <script>
+        // Estado da aplicação
+        const API_BASE = 'http://localhost:8080/api';
+        let currentUser = null;
+        let authToken = null;
+
+        // Verificar se está logado
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                authToken = token;
+                loadUserData();
+                loadClips();
+            } else {
+                openModal('login');
+            }
+        });
+
+        // LOGIN
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('Preencha todos os campos');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Erro: ' + data.error);
+                    return;
+                }
+
+                authToken = data.access_token;
+                localStorage.setItem('authToken', authToken);
+                closeModal('login');
+                loadUserData();
+                loadClips();
+            } catch (error) {
+                alert('Erro ao fazer login: ' + error.message);
+            }
+        }
+
+        // SIGNUP
+        async function signup() {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+
+            if (!name || !email || !password) {
+                alert('Preencha todos os campos');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('Senha deve ter mínimo 6 caracteres');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, name })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert('Erro: ' + data.error);
+                    return;
+                }
+
+                alert('Conta criada! Faça login agora.');
+                openModal('login');
+            } catch (error) {
+                alert('Erro ao criar conta: ' + error.message);
+            }
+        }
+
+        // LOGOUT
+        function logout() {
+            localStorage.removeItem('authToken');
+            authToken = null;
+            currentUser = null;
+            openModal('login');
+        }
+
+        // CARREGAR DADOS DO USER
+        async function loadUserData() {
+            try {
+                const response = await fetch(`${API_BASE}/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    currentUser = user;
+                    document.getElementById('userName').textContent = user.name || user.email;
+                    document.getElementById('userPlan').textContent = user.plan;
+                    document.getElementById('creditCount').textContent = user.credits || 0;
+                    document.getElementById('userPlanStat').textContent = (user.plan || 'free').toUpperCase();
+                }
+            } catch (error) {
+                console.error('Erro ao carregar usuário:', error);
+            }
+        }
+
+        // PROCESSAR VÍDEO
+        async function processVideo() {
+            const youtubeUrl = document.getElementById('youtubeInput').value;
+            const fileInput = document.getElementById('fileInput');
+
+            if (!youtubeUrl && fileInput.files.length === 0) {
+                alert('Cole uma URL do YouTube ou selecione um arquivo');
+                return;
+            }
+
+            if (!authToken) {
+                alert('Faça login primeiro');
+                return;
+            }
+
+            const videoUrl = youtubeUrl || 'file://' + fileInput.files[0].name;
+
+            showProcessing(true);
+
+            try {
+                const response = await fetch(`${API_BASE}/process`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({ youtube_url: videoUrl })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error);
+                }
+
+                const jobId = data.job_id;
+                monitorJob(jobId);
+            } catch (error) {
+                alert('Erro ao processar: ' + error.message);
+                showProcessing(false);
+            }
+        }
+
+        // MONITORAR JOB
+        async function monitorJob(jobId) {
+            const maxWait = 300000; // 5 minutos
+            const startTime = Date.now();
+
+            const checkStatus = async () => {
+                try {
+                    const response = await fetch(`${API_BASE}/process/${jobId}`, {
+                        headers: { 'Authorization': `Bearer ${authToken}` }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'completed') {
+                        showProcessing(false);
+                        alert('Vídeo processado! Seus cortes estão prontos.');
+                        loadClips();
+                        document.getElementById('youtubeInput').value = '';
+                        document.getElementById('fileInput').value = '';
+                    } else if (data.status === 'failed') {
+                        showProcessing(false);
+                        alert('Erro ao processar: ' + (data.error_message || 'Tente novamente'));
+                    } else if (Date.now() - startTime > maxWait) {
+                        showProcessing(false);
+                        alert('Processamento demorou muito. Tente novamente.');
+                    } else {
+                        updateProgress(Math.min((Date.now() - startTime) / maxWait * 100, 90));
+                        setTimeout(checkStatus, 2000);
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status:', error);
+                    setTimeout(checkStatus, 2000);
+                }
+            };
+
+            checkStatus();
+        }
+
+        // CARREGAR CLIPS
+        async function loadClips() {
+            if (!authToken) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/clips`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                const data = await response.json();
+                const clips = data.clips || [];
+
+                const grid = document.getElementById('clipsGrid');
+
+                if (clips.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎬</div>
+                            <p>Nenhum corte criado ainda.<br>Processe um vídeo para começar!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = clips.map(clip => `
+                    <div class="clip-card">
+                        <div class="clip-thumbnail">▶️</div>
+                        <div class="clip-info">
+                            <div class="clip-title">${clip.title || 'Sem título'}</div>
+                            <div class="clip-reason">${clip.reason || 'Momento viral'}</div>
+                            <div class="clip-meta">
+                                <span>${clip.duration || 0}s</span>
+                                <span>${new Date(clip.created_at).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <div class="clip-actions">
+                                <button class="btn-action btn-download" onclick="downloadClip('${clip.id}', '${clip.title}')">⬇️ Download</button>
+                                <button class="btn-action btn-delete" onclick="deleteClip('${clip.id}')">🗑️</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('clipCount').textContent = clips.length;
+            } catch (error) {
+                console.error('Erro ao carregar clips:', error);
+            }
+        }
+
+        // DOWNLOAD CLIP
+        function downloadClip(clipId, title) {
+            // Simular download
+            alert(`Download iniciado: ${title}\n\nEm produção, o arquivo será baixado automaticamente do Supabase Storage.`);
+            // window.location.href = `${API_BASE}/clips/${clipId}/download`;
+        }
+
+        // DELETE CLIP
+        async function deleteClip(clipId) {
+            if (!confirm('Tem certeza que quer deletar este corte?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/clips/${clipId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+
+                if (response.ok) {
+                    alert('Corte deletado!');
+                    loadClips();
+                } else {
+                    alert('Erro ao deletar');
+                }
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        // UI HELPERS
+        function showProcessing(show) {
+            document.getElementById('processingStatus').classList.toggle('active', show);
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('youtubeInput').value = file.name;
+            }
+        }
+
+        function openModal(type) {
+            document.getElementById(type + 'Modal').classList.add('active');
+        }
+
+        function closeModal(type) {
+            document.getElementById(type + 'Modal').classList.remove('active');
+        }
+
+        // Auto-load clips a cada 5 segundos
+        setInterval(() => {
+            if (authToken) loadClips();
+        }, 5000);
+    </script>
+</body>
+</html>
