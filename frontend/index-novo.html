@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind - Plataforma de Cortes Virais com IA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0D1B2A;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: #0D1B2A;
+            padding: 20px 40px;
+            border-bottom: 1px solid #1a2d3a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #C9A84C;
+            text-decoration: none;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #C9A84C;
+        }
+
+        .btn-primary {
+            background: #C9A84C;
+            color: #0D1B2A;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background: #E0C158;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0D1B2A 0%, #1a2d3a 100%);
+            padding: 80px 40px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: #C9A84C;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #C9A84C;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .hero-description {
+            font-size: 16px;
+            color: #B0B0B0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #C9A84C;
+            padding: 12px 30px;
+            border: 2px solid #C9A84C;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        /* Section */
+        section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 40px;
+        }
+
+        section h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 28px;
+        }
+
+        /* Stack */
+        .stack-list {
+            list-style: none;
+            columns: 2;
+            column-gap: 40px;
+        }
+
+        .stack-list li {
+            margin-bottom: 15px;
+            padding-left: 25px;
+            position: relative;
+            color: #B0B0B0;
+        }
+
+        .stack-list li:before {
+            content: "•";
+            color: #C9A84C;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .stack-list strong {
+            color: #FFFFFF;
+        }
+
+        /* Próximos Passos */
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li {
+            padding: 12px 0;
+            padding-left: 35px;
+            position: relative;
+            color: #B0B0B0;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            color: #C9A84C;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+        }
+
+        .checklist li.done:before {
+            content: "☑";
+            color: #4CAF50;
+        }
+
+        /* Suporte */
+        .support-links {
+            list-style: none;
+        }
+
+        .support-links li {
+            margin-bottom: 15px;
+            color: #B0B0B0;
+        }
+
+        .support-links a {
+            color: #C9A84C;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .support-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            padding: 30px 40px;
+            text-align: center;
+            margin-top: 80px;
+            border-top: 1px solid #1a2d3a;
+            color: #808080;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .hero {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            section {
+                padding: 0 20px;
+                margin: 40px auto;
+            }
+
+            .stack-list {
+                columns: 1;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">🎬 ClipMind</a>
+            <ul>
+                <li><a href="#stack">Stack</a></li>
+                <li><a href="#proximos">Próximos Passos</a></li>
+                <li><a href="#suporte">Suporte</a></li>
+                <li><a href="dashboard.html" class="btn-primary">Entrar</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-icon">🎬</div>
+        <h1>ClipMind — Plataforma de Cortes Virais com IA</h1>
+        <p class="tagline">A mente inteligente por trás do seu viral</p>
+        <p class="hero-description">
+            Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. 
+            Otimizado para políticos. Powered by IA.
+        </p>
+        <div class="hero-buttons">
+            <a href="dashboard.html" class="btn-primary">Começar Agora</a>
+            <a href="#proximos" class="btn-secondary">Saber Mais</a>
+        </div>
+    </section>
+
+    <!-- Stack Section -->
+    <section id="stack">
+        <h2><span class="icon">📋</span>Stack</h2>
+        <ul class="stack-list">
+            <li><strong>Backend:</strong> Node.js + Express</li>
+            <li><strong>Database:</strong> Supabase (PostgreSQL)</li>
+            <li><strong>Storage:</strong> Supabase Storage</li>
+            <li><strong>Transcrição:</strong> OpenAI Whisper</li>
+            <li><strong>IA Análise:</strong> Anthropic Claude Haiku</li>
+            <li><strong>Edição de Vídeo:</strong> FFmpeg + yt-dlp</li>
+            <li><strong>Pagamento:</strong> Mercado Pago</li>
+            <li><strong>Hospedagem:</strong> Railway</li>
+        </ul>
+    </section>
+
+    <!-- Próximos Passos Section -->
+    <section id="proximos">
+        <h2><span class="icon">📈</span>Próximos Passos</h2>
+        <ul class="checklist">
+            <li class="done">Frontend completo (upload + download)</li>
+            <li class="done">Integração Mercado Pago</li>
+            <li class="done">Landing page</li>
+            <li>Analytics</li>
+            <li>Dashboard</li>
+            <li>Biblioteca com busca</li>
+            <li>Gamificação</li>
+        </ul>
+    </section>
+
+    <!-- Suporte Section -->
+    <section id="suporte">
+        <h2><span class="icon">☎️</span>Suporte</h2>
+        <ul class="support-links">
+            <li><strong>Issues:</strong> <a href="https://github.com/Luiza140528/clipmind/issues" target="_blank">github.com/Luiza140528/clipmind/issues</a></li>
+            <li><strong>Email:</strong> <a href="mailto:contato@clipmind.com">contato@clipmind.com</a></li>
+            <li><strong>GitHub:</strong> <a href="https://github.com/Luiza140528/clipmind" target="_blank">github.com/Luiza140528/clipmind</a></li>
+        </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>ClipMind © 2026 — Transforme vídeos em estratégia</p>
+        <p style="margin-top: 10px; font-size: 14px;">Desenvolvido por <strong>Luiza Costa Soares</strong> | A Seta do Interior 🏹</p>
+    </footer>
+</body>
+</html>
