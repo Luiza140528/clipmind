@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #0D1B2A; color: #fff; }
+        .page { display: none; }
+        .page.active { display: block; }
+        
+        /* LANDING */
+        .landing { padding: 60px 20px; text-align: center; }
+        .landing h1 { font-size: 48px; margin: 20px 0; color: #C9A84C; }
+        .landing p { font-size: 16px; color: #B0B0B0; margin: 10px 0; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn { padding: 12px 30px; background: #C9A84C; color: #0D1B2A; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin: 10px; }
+        .btn:hover { background: #E0C158; }
+        
+        .trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 40px 0; }
+        .trust-card { background: #1a2d3a; padding: 20px; border-radius: 10px; text-align: center; }
+        .trust-card p { font-size: 12px; color: #B0B0B0; }
+        
+        .pricing { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin: 40px 0; }
+        .plan { background: #1a2d3a; padding: 15px; border-radius: 10px; text-align: center; }
+        .plan h3 { color: #C9A84C; margin: 10px 0; }
+        .plan p { font-size: 12px; color: #B0B0B0; }
+        
+        /* LOGIN */
+        .login-box { background: #1a2d3a; padding: 40px; max-width: 400px; margin: 100px auto; border-radius: 10px; text-align: center; }
+        .login-box h2 { color: #C9A84C; margin-bottom: 30px; }
+        .login-box input { width: 100%; padding: 10px; margin: 10px 0; background: #0D1B2A; border: 1px solid #1a2d3a; color: #fff; border-radius: 6px; }
+        .login-group { display: flex; gap: 8px; margin: 10px 0; }
+        .login-group input { flex: 1; }
+        .eye-btn { background: transparent; border: 1px solid #C9A84C; color: #C9A84C; padding: 10px 12px; cursor: pointer; border-radius: 6px; }
+        
+        /* DASHBOARD */
+        .dashboard { display: flex; }
+        .sidebar { width: 250px; background: #1a2d3a; padding: 20px; height: 100vh; overflow-y: auto; position: fixed; }
+        .sidebar h2 { color: #C9A84C; margin-bottom: 30px; }
+        .sidebar p { padding: 10px; cursor: pointer; border-radius: 6px; transition: 0.3s; }
+        .sidebar p:hover { background: rgba(201, 168, 76, 0.1); color: #C9A84C; }
+        .sidebar p.active { background: #C9A84C; color: #0D1B2A; font-weight: bold; }
+        
+        .main { margin-left: 250px; padding: 30px; flex: 1; }
+        .main h1 { color: #C9A84C; margin-bottom: 20px; }
+        
+        .status { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .status-card { background: #1a2d3a; padding: 15px; border-radius: 8px; text-align: center; }
+        .status-card .label { font-size: 12px; color: #B0B0B0; }
+        .status-card .value { font-size: 24px; font-weight: bold; color: #C9A84C; }
+        
+        .upload { background: #1a2d3a; border: 2px dashed #C9A84C; padding: 40px; text-align: center; border-radius: 10px; margin-bottom: 30px; cursor: pointer; }
+        .upload-btn { padding: 10px 20px; background: #C9A84C; color: #0D1B2A; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        
+        .clips { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; }
+        .clip { background: #1a2d3a; padding: 15px; border-radius: 8px; text-align: center; }
+        .clip-icon { font-size: 36px; margin-bottom: 10px; }
+        .clip-name { font-size: 12px; font-weight: bold; }
+        .clip-duration { font-size: 11px; color: #B0B0B0; }
+        
+        @media (max-width: 768px) {
+            .sidebar { width: 0; transform: translateX(-100%); }
+            .main { margin-left: 0; }
+            .dashboard.sidebar-open .sidebar { width: 250px; transform: translateX(0); }
+            .login-box { margin: 50px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- LANDING -->
+    <div id="landing" class="page active">
+        <div class="landing">
+            <div style="font-size: 60px; margin: 30px 0;">🎬</div>
+            <h1>ClipMind</h1>
+            <p>Plataforma de Cortes Virais com IA</p>
+            <p style="color: #C9A84C; font-size: 16px;">A mente inteligente por trás do seu viral</p>
+            <p>Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts.</p>
+            <button class="btn" onclick="showPage('login')">🚀 Começar Agora</button>
+            
+            <h2 style="margin-top: 60px; color: #C9A84C;">Confiança</h2>
+            <div class="trust">
+                <div class="trust-card"><div style="font-size: 30px;">✅</div><p>100% Seguro</p></div>
+                <div class="trust-card"><div style="font-size: 30px;">⚡</div><p>Rápido 5min</p></div>
+                <div class="trust-card"><div style="font-size: 30px;">🤖</div><p>IA Inteligente</p></div>
+                <div class="trust-card"><div style="font-size: 30px;">🔒</div><p>Privado</p></div>
+            </div>
+            
+            <h2 style="margin-top: 60px; color: #C9A84C;">Planos</h2>
+            <div class="pricing">
+                <div class="plan"><h3>Free</h3><p>R$ 0<br>3 clips</p></div>
+                <div class="plan"><h3>Starter</h3><p>R$ 197<br>30 clips</p></div>
+                <div class="plan"><h3>Pro</h3><p>R$ 397<br>100 clips</p></div>
+                <div class="plan"><h3>Elite</h3><p>R$ 697<br>Ilimitado</p></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- LOGIN -->
+    <div id="login" class="page">
+        <div class="login-box">
+            <div style="font-size: 48px; margin-bottom: 20px;">🎬</div>
+            <h2>ClipMind</h2>
+            <input type="email" placeholder="Email" id="email" value="luiza@clipmind.com">
+            <div class="login-group">
+                <input type="password" placeholder="Senha" id="password" value="123456">
+                <button class="eye-btn" onclick="togglePassword()">👀</button>
+            </div>
+            <button class="btn" onclick="showPage('dashboard')" style="width: 100%; margin-top: 20px;">Entrar</button>
+            <button class="btn" onclick="showPage('landing')" style="width: 100%; background: transparent; color: #C9A84C; border: 1px solid #C9A84C;">← Voltar</button>
+        </div>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="page">
+        <div class="dashboard">
+            <aside class="sidebar">
+                <h2>🎬 ClipMind</h2>
+                <p class="active" onclick="switchTab('overview', this)">📊 Dashboard</p>
+                <p onclick="switchTab('biblioteca', this)">📚 Biblioteca</p>
+                <p onclick="switchTab('clips', this)">📁 Meus Clips</p>
+                <p onclick="switchTab('analytics', this)">📈 Analytics</p>
+                <p onclick="switchTab('config', this)">⚙️ Configurações</p>
+                <hr style="margin: 20px 0; border: none; border-top: 1px solid #0D1B2A;">
+                <p onclick="showPage('login')" style="color: #ff6b6b;">🚪 Sair</p>
+            </aside>
+            
+            <div class="main">
+                <!-- OVERVIEW -->
+                <div id="overview" class="tab active">
+                    <h1>📊 Dashboard</h1>
+                    <div class="status">
+                        <div class="status-card"><div class="label">Seu Plano</div><div class="value">Pro</div></div>
+                        <div class="status-card"><div class="label">Clips Usados</div><div class="value">47/100</div></div>
+                        <div class="status-card"><div class="label">Views</div><div class="value">125K</div></div>
+                        <div class="status-card"><div class="label">Engajamento</div><div class="value">8.4K</div></div>
+                    </div>
+                    
+                    <div class="upload">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📹</div>
+                        <p>Faça Upload de um Vídeo</p>
+                        <p style="font-size: 12px; color: #B0B0B0; margin: 10px 0;">MP4, WebM, MOV (Máx 500MB)</p>
+                        <button class="upload-btn">📤 Escolher Vídeo</button>
+                    </div>
+                    
+                    <h3 style="color: #C9A84C; margin-bottom: 15px;">📁 Clips Recentes</h3>
+                    <div class="clips">
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Promessa</div><div class="clip-duration">30s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Resposta</div><div class="clip-duration">45s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Anúncio</div><div class="clip-duration">25s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Interação</div><div class="clip-duration">35s</div></div>
+                    </div>
+                </div>
+                
+                <!-- BIBLIOTECA -->
+                <div id="biblioteca" class="tab" style="display: none;">
+                    <h1>📚 Biblioteca</h1>
+                    <div class="clips">
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Campanha 2026</div><div class="clip-duration">45s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Voto Seguro</div><div class="clip-duration">30s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Desenvolvimento</div><div class="clip-duration">40s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Educação</div><div class="clip-duration">35s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Saúde</div><div class="clip-duration">28s</div></div>
+                        <div class="clip"><div class="clip-icon">🎬</div><div class="clip-name">Infraestrutura</div><div class="clip-duration">32s</div></div>
+                    </div>
+                </div>
+                
+                <!-- CLIPS -->
+                <div id="clips" class="tab" style="display: none;">
+                    <h1>📁 Meus Clips (47)</h1>
+                    <p style="color: #B0B0B0; margin: 20px 0;">Lista de todos os seus clips gerados</p>
+                </div>
+                
+                <!-- ANALYTICS -->
+                <div id="analytics" class="tab" style="display: none;">
+                    <h1>📈 Analytics</h1>
+                    <div class="status">
+                        <div class="status-card"><div class="label">Total Views</div><div class="value">125K</div></div>
+                        <div class="status-card"><div class="label">Engajamento</div><div class="value">8.4K</div></div>
+                        <div class="status-card"><div class="label">Conversão</div><div class="value">6.7%</div></div>
+                    </div>
+                </div>
+                
+                <!-- CONFIG -->
+                <div id="config" class="tab" style="display: none;">
+                    <h1>⚙️ Configurações</h1>
+                    <p style="color: #B0B0B0; margin: 20px 0;">
+                        Email: luiza@clipmind.com<br>
+                        Plano: Pro<br>
+                        Membro desde: 15 de junho de 2026
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showPage(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(page).classList.add('active');
+        }
+        
+        function switchTab(tab, element) {
+            document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+            document.getElementById(tab).style.display = 'block';
+            
+            document.querySelectorAll('.sidebar p').forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+        }
+        
+        function togglePassword() {
+            const input = document.getElementById('password');
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+    </script>
+</body>
+</html>
