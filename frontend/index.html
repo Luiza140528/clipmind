@@ -2,30 +2,94 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ClipMind</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background-color: #0D1B2A; 
-            color: #FFFFFF; 
-            font-family: sans-serif; 
-            text-align: center; 
-            padding: 50px; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0D1B2A 0%, #1a2d3a 100%);
+            color: #FFFFFF;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .cta-button { 
-            background-color: #C9A84C; 
-            color: #0D1B2A; 
-            padding: 15px 30px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            font-weight: bold; 
-            display: inline-block; 
-            margin-top: 20px; 
+        .container {
+            max-width: 600px;
+            width: 100%;
+            padding: 50px 30px;
+            background: rgba(13, 27, 42, 0.9);
+            border-radius: 15px;
+            border: 1px solid #1a2d3a;
+            text-align: center;
         }
+        .logo { font-size: 48px; margin-bottom: 20px; }
+        h1 { font-size: 36px; margin-bottom: 15px; color: #FFFFFF; }
+        .tagline { font-size: 16px; color: #C9A84C; margin-bottom: 20px; }
+        p { font-size: 15px; color: #B0B0B0; line-height: 1.6; margin-bottom: 30px; }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .btn {
+            padding: 12px 30px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .btn-primary {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+        .btn-primary:hover {
+            background: #E0C158;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #C9A84C;
+            border: 2px solid #C9A84C;
+        }
+        .btn-secondary:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+        .stack { margin-top: 30px; padding-top: 20px; border-top: 1px solid #1a2d3a; }
+        .stack h3 { color: #C9A84C; margin-bottom: 15px; }
+        .stack p { font-size: 13px; color: #B0B0B0; }
     </style>
 </head>
 <body>
-    <h1>ClipMind</h1>
-    <p>Plataforma de Cortes Virais com IA</p>
-    <a href="#" class="cta-button">Entrar</a>
+    <div class="container">
+        <div class="logo">🎬</div>
+        <h1>ClipMind</h1>
+        <p class="tagline">Plataforma de Cortes Virais com IA</p>
+        <p class="tagline">A mente inteligente por trás do seu viral</p>
+        <p>Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. Otimizado para políticos. Powered by IA.</p>
+        
+        <div class="buttons">
+            <a href="dashboard.html" class="btn btn-primary">Começar Agora</a>
+            <a href="#" class="btn btn-secondary">Saber Mais</a>
+        </div>
+
+        <div class="stack">
+            <h3>📋 Stack</h3>
+            <p><strong>Backend:</strong> Node.js + Express</p>
+            <p><strong>Database:</strong> Supabase (PostgreSQL)</p>
+            <p><strong>IA:</strong> Claude Haiku</p>
+            <p><strong>Pagamento:</strong> Mercado Pago</p>
+            <p><strong>Deploy:</strong> Railway</p>
+        </div>
+    </div>
 </body>
 </html>
