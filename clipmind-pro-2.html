@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind - Plataforma Profissional</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0D1B2A;
+            color: #FFFFFF;
+            overflow: hidden;
+        }
+
+        /* ========== PAGES ========== */
+        .page {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: none;
+            z-index: 1;
+        }
+        
+        .page.active {
+            display: flex;
+            z-index: 10;
+        }
+
+        /* ========== LANDING PAGE ========== */
+        #landing {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 20px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .landing-content {
+            text-align: center;
+            max-width: 700px;
+            margin-top: 20px;
+        }
+
+        .landing-logo { font-size: 48px; margin-bottom: 15px; }
+        .landing-content h1 { font-size: 36px; margin-bottom: 8px; color: #FFFFFF; }
+        .landing-tagline { font-size: 16px; color: #C9A84C; margin-bottom: 15px; font-weight: 500; }
+        .landing-desc { font-size: 14px; color: #B0B0B0; margin-bottom: 20px; line-height: 1.5; }
+
+        .btn-start {
+            padding: 14px 40px;
+            background: #C9A84C;
+            color: #0D1B2A;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .btn-start:hover { background: #E0C158; transform: translateY(-2px); }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .trust-card {
+            background: rgba(26, 45, 58, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .trust-icon { font-size: 28px; margin-bottom: 8px; }
+        .trust-title { font-size: 12px; font-weight: 600; color: #FFFFFF; margin-bottom: 4px; }
+        .trust-text { font-size: 10px; color: #B0B0B0; }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 10px;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .plan-card {
+            background: rgba(13, 27, 42, 0.95);
+            border: 1px solid #1a2d3a;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .plan-name { font-size: 12px; font-weight: 600; color: #C9A84C; margin-bottom: 6px; }
+        .plan-price { font-size: 16px; font-weight: bold; color: #FFFFFF; margin-bottom: 4px; }
+        .plan-feature { font-size: 10px; color: #B0B0B0; }
+
+        /* ========== LOGIN PAGE ========== */
+        #login {
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(13, 27, 42, 0.95);
+            border: 1px solid #1a2d3a;
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo { font-size: 48px; text-align: center; margin-bottom: 20px; }
+        .login-title { font-size: 24px; text-align: center; margin-bottom: 30px; font-weight: 600; color: #FFFFFF; }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #B0B0B0;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(26, 45, 58, 0.5);
+            border: 1px solid #1a2d3a;
+            border-radius: 6px;
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #C9A84C;
+        }
+
+        .password-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .password-group input {
+            flex: 1;
+        }
+
+        .eye-toggle {
+            background: transparent;
+            border: 1px solid #C9A84C;
+            color: #C9A84C;
+            padding: 12px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 24px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .eye-toggle:hover {
+            border-color: #E0C158;
+            background: rgba(201, 168, 76, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: #C9A84C;
+            color: #0D1B2A;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn-login:hover { background: #E0C158; }
+
+        .social-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            color: #B0B0B0;
+            font-size: 12px;
+        }
+
+        .social-divider::before,
+        .social-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #1a2d3a;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-social {
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #1a2d3a;
+            color: #B0B0B0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-social:hover {
+            border-color: #C9A84C;
+            color: #C9A84C;
+        }
+
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        .login-links a {
+            color: #C9A84C;
+            text-decoration: none;
+        }
+
+        .login-links a:hover {
+            text-decoration: underline;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 12px;
+            color: #B0B0B0;
+        }
+
+        .signup-link a {
+            color: #C9A84C;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* ========== DASHBOARD PAGE ========== */
+        #dashboard.page.active {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .sidebar-drawer {
+            width: 260px;
+            background: rgba(13, 27, 42, 0.98);
+            border-right: 1px solid #1a2d3a;
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-drawer.closed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #C9A84C;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-menu-item {
+            color: #B0B0B0;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            background: transparent;
+            border: none;
+            width: 100%;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .sidebar-menu-item:hover {
+            background: rgba(201, 168, 76, 0.1);
+            color: #C9A84C;
+        }
+
+        .sidebar-menu-item.active {
+            background: #C9A84C;
+            color: #0D1B2A;
+            font-weight: 600;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background: #1a2d3a;
+            margin: 20px 0;
+        }
+
+        .sidebar-logout {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            padding: 10px;
+            background: transparent;
+            color: #ff6b6b;
+            border: 1px solid #ff6b6b;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: calc(100% - 40px);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 50;
+        }
+
+        .sidebar-overlay.visible {
+            display: block;
+        }
+
+        .main-container {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            height: 100vh;
+            width: calc(100% - 260px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1a2d3a;
+        }
+
+        .dashboard-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            color: #C9A84C;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: transparent;
+            color: #C9A84C;
+            border: 1px solid #C9A84C;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        .view-content {
+            display: none;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
+        /* PROGRESS BAR */
+        .progress-card {
+            background: rgba(26, 45, 58, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+
+        .btn-upgrade {
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #C9A84C;
+            color: #C9A84C;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-upgrade:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: #0D1B2A;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #C9A84C, #E0C158);
+            width: 47%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 11px;
+            color: #B0B0B0;
+            text-align: right;
+        }
+
+        /* UPLOAD BOX */
+        .upload-box {
+            background: rgba(13, 27, 42, 0.95);
+            border: 2px dashed #C9A84C;
+            border-radius: 12px;
+            padding: 50px 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-box:hover {
+            border-color: #E0C158;
+            background: rgba(13, 27, 42, 0.98);
+        }
+
+        .upload-box.drag-over {
+            background: rgba(201, 168, 76, 0.1);
+            border-color: #E0C158;
+        }
+
+        .upload-icon { font-size: 48px; margin-bottom: 15px; }
+        .upload-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .upload-subtitle { font-size: 12px; color: #B0B0B0; margin-bottom: 15px; }
+        .upload-status { font-size: 11px; color: #C9A84C; margin-top: 15px; font-style: italic; display: none; }
+        .upload-status.active { display: block; }
+
+        #fileInput { display: none; }
+
+        /* CLIPS TABLE */
+        .clips-section {
+            background: rgba(13, 27, 42, 0.95);
+            border: 1px solid #1a2d3a;
+            border-radius: 10px;
+            padding: 25px;
+        }
+
+        .clips-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+
+        .clips-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .clips-table thead {
+            background: rgba(26, 45, 58, 0.5);
+        }
+
+        .clips-table th {
+            padding: 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #C9A84C;
+            text-transform: uppercase;
+            border-bottom: 1px solid #1a2d3a;
+        }
+
+        .clips-table td {
+            padding: 12px;
+            border-bottom: 1px solid #1a2d3a;
+            font-size: 13px;
+        }
+
+        .clips-table tr:hover {
+            background: rgba(201, 168, 76, 0.05);
+        }
+
+        .btn-action {
+            padding: 6px 10px;
+            background: transparent;
+            border: 1px solid #C9A84C;
+            color: #C9A84C;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 6px;
+            transition: all 0.3s;
+        }
+
+        .btn-action:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        /* ANALYTICS */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: rgba(26, 45, 58, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #1a2d3a;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #B0B0B0;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 5px;
+        }
+
+        .metric-growth {
+            font-size: 14px;
+            color: #4ade80;
+            font-weight: 600;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .main-container { margin-left: 0; width: 100%; padding: 20px; }
+            .sidebar-drawer { width: 100%; }
+            .menu-toggle { display: block; }
+            .upload-box { padding: 30px 15px; }
+            .clips-table { font-size: 11px; }
+            .clips-table th, .clips-table td { padding: 8px; }
+            .trust-grid { grid-template-columns: repeat(2, 1fr); }
+            .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+            .metrics-grid { grid-template-columns: 1fr; }
+            .login-box { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- LANDING PAGE -->
+    <div id="landing" class="page active">
+        <div class="landing-content">
+            <div class="landing-logo">🎬</div>
+            <h1>ClipMind</h1>
+            <p class="landing-tagline">Plataforma de Cortes Virais com IA</p>
+            <p class="landing-desc">Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. Otimizado para políticos. Powered by IA.</p>
+            <button class="btn-start" onclick="appState.setPage('login')">🚀 Começar Agora</button>
+
+            <div class="trust-grid">
+                <div class="trust-card">
+                    <div class="trust-icon">✅</div>
+                    <div class="trust-title">100% Seguro</div>
+                    <div class="trust-text">TLS 1.3</div>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">⚡</div>
+                    <div class="trust-title">Rápido</div>
+                    <div class="trust-text">5 minutos</div>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🤖</div>
+                    <div class="trust-title">IA Inteligente</div>
+                    <div class="trust-text">Claude + Whisper</div>
+                </div>
+                <div class="trust-card">
+                    <div class="trust-icon">🔒</div>
+                    <div class="trust-title">Privado</div>
+                    <div class="trust-text">RLS Ativo</div>
+                </div>
+            </div>
+
+            <h2 style="color: #C9A84C; margin-top: 40px; margin-bottom: 20px;">💰 Planos</h2>
+            <div class="pricing-grid">
+                <div class="plan-card">
+                    <div class="plan-name">Free</div>
+                    <div class="plan-price">R$ 0</div>
+                    <div class="plan-feature">3 clips/mês</div>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-name">Starter</div>
+                    <div class="plan-price">R$ 197</div>
+                    <div class="plan-feature">30 clips/mês</div>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price">R$ 397</div>
+                    <div class="plan-feature">100 clips/mês</div>
+                </div>
+                <div class="plan-card">
+                    <div class="plan-name">Elite</div>
+                    <div class="plan-price">R$ 697</div>
+                    <div class="plan-feature">Ilimitado</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="login" class="page" style="position: fixed; z-index: 200;">
+        <div class="login-box">
+            <div class="login-logo">🎬</div>
+            <h2 class="login-title">ClipMind</h2>
+            
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" value="luiza@clipmind.com">
+            </div>
+
+            <div class="form-group">
+                <label>Senha</label>
+                <div class="password-group">
+                    <input type="password" id="password" value="123456">
+                    <button class="eye-toggle" onclick="appState.togglePassword()">👀</button>
+                </div>
+            </div>
+
+            <button class="btn-login" onclick="appState.setPage('dashboard')">Entrar</button>
+
+            <div class="social-divider">OU</div>
+
+            <div class="social-buttons">
+                <button class="btn-social">🔵 Google</button>
+                <button class="btn-social">🔗 LinkedIn</button>
+            </div>
+
+            <div class="login-links">
+                <a href="#">Esqueceu sua senha?</a>
+                <button style="background: none; border: none; cursor: pointer;" onclick="appState.setPage('landing')">← Voltar</button>
+            </div>
+
+            <div class="signup-link">
+                Ainda não tem uma conta? <a href="#">Cadastre-se</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboard" class="page">
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="appState.closeSidebar()"></div>
+        
+        <aside class="sidebar-drawer" id="sidebarDrawer">
+            <div class="sidebar-logo">🎬 ClipMind</div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <button class="sidebar-menu-item" id="menu-dashboard" onclick="appState.setActiveView('dashboard')">
+                        📊 Dashboard
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-menu-item" id="menu-biblioteca" onclick="appState.setActiveView('biblioteca')">
+                        📚 Biblioteca
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-menu-item" id="menu-clips" onclick="appState.setActiveView('clips')">
+                        📁 Meus Clips
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-menu-item" id="menu-analytics" onclick="appState.setActiveView('analytics')">
+                        📈 Analytics
+                    </button>
+                </li>
+                <li>
+                    <button class="sidebar-menu-item" id="menu-config" onclick="appState.setActiveView('config')">
+                        ⚙️ Configurações
+                    </button>
+                </li>
+            </ul>
+
+            <div class="sidebar-divider"></div>
+            
+            <button class="sidebar-logout" onclick="appState.setPage('login')">🚪 Sair</button>
+        </aside>
+
+        <div class="main-container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">📊 Dashboard</h1>
+                <button class="menu-toggle" onclick="appState.openSidebar()">☰</button>
+                <button class="logout-btn" onclick="appState.setPage('login')">🚪 Sair</button>
+            </div>
+
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="view-content active">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-label">Clips Usados</div>
+                        <button class="btn-upgrade" onclick="alert('Upgrade para Pro ou Elite!')">[ Upgrade ]</button>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                    <div class="progress-text">47 / 100 clips</div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Seu Plano</div>
+                        <div class="metric-value">Pro</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Views Totais</div>
+                        <div class="metric-value">125K</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Engajamento</div>
+                        <div class="metric-value">8.4K</div>
+                    </div>
+                </div>
+
+                <div class="upload-box" ondrop="appState.handleDrop(event)" ondragover="appState.handleDragOver(event)" ondragleave="appState.handleDragLeave(event)">
+                    <input type="file" id="fileInput" onchange="appState.handleFileSelect(event)" style="display: none;">
+                    <div class="upload-icon">📹</div>
+                    <div class="upload-title">Faça Upload de um Vídeo</div>
+                    <div class="upload-subtitle">MP4, WebM, MOV (Máx 500MB) | Arraste ou clique</div>
+                    <button class="btn-start" style="margin-top: 10px;" onclick="event.stopPropagation(); document.getElementById('fileInput').click();">📤 Escolher Vídeo</button>
+                    <div class="upload-status" id="uploadStatus">🤖 Processando com IA: Identificação de ganchos em andamento...</div>
+                </div>
+
+                <div class="clips-section">
+                    <h3 class="clips-title">📁 Clips Recentes</h3>
+                    <table class="clips-table">
+                        <thead>
+                            <tr>
+                                <th>Nome do Clip</th>
+                                <th>Duração</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Promessa Campanha</td>
+                                <td>30s</td>
+                                <td>16/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Resposta Crítica</td>
+                                <td>45s</td>
+                                <td>16/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Anúncio Importante</td>
+                                <td>25s</td>
+                                <td>16/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Interação Povo</td>
+                                <td>35s</td>
+                                <td>16/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW: BIBLIOTECA -->
+            <div id="view-biblioteca" class="view-content">
+                <h2 style="color: #C9A84C; margin-bottom: 20px;">📚 Biblioteca</h2>
+                <div class="clips-section">
+                    <table class="clips-table">
+                        <thead>
+                            <tr>
+                                <th>Tema</th>
+                                <th>Duração</th>
+                                <th>Data</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Campanha 2026</td>
+                                <td>45s</td>
+                                <td>10/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Voto Seguro</td>
+                                <td>30s</td>
+                                <td>10/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Desenvolvimento</td>
+                                <td>40s</td>
+                                <td>10/06</td>
+                                <td>
+                                    <button class="btn-action" onclick="alert('Baixando...')">Baixar</button>
+                                    <button class="btn-action" onclick="alert('Compartilhando...')">Compartilhar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- VIEW: CLIPS -->
+            <div id="view-clips" class="view-content">
+                <h2 style="color: #C9A84C; margin-bottom: 20px;">📁 Meus Clips (47)</h2>
+                <p style="color: #B0B0B0;">Lista completa de todos os seus clips gerados. Total de 47 clips em sua conta.</p>
+            </div>
+
+            <!-- VIEW: ANALYTICS -->
+            <div id="view-analytics" class="view-content">
+                <h2 style="color: #C9A84C; margin-bottom: 20px;">📈 Analytics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Views Totais</div>
+                        <div class="metric-value">125K</div>
+                        <div class="metric-growth">⬆️ +25% este mês</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Engajamento</div>
+                        <div class="metric-value">8.4K</div>
+                        <div class="metric-growth">⬆️ +15% este mês</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Taxa de Conversão</div>
+                        <div class="metric-value">6.7%</div>
+                        <div class="metric-growth">⬆️ +2% este mês</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: CONFIG -->
+            <div id="view-config" class="view-content">
+                <h2 style="color: #C9A84C; margin-bottom: 20px;">⚙️ Configurações</h2>
+                <p style="color: #B0B0B0; line-height: 1.8;">
+                    <strong>Email:</strong> luiza@clipmind.com<br>
+                    <strong>Plano:</strong> Pro (R$ 397/mês)<br>
+                    <strong>Membro desde:</strong> 15 de junho de 2026<br>
+                    <strong>Clips restantes:</strong> 53 / 100
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATE MANAGEMENT -->
+    <script>
+        const appState = {
+            currentPage: 'landing',
+            activeView: 'dashboard',
+            sidebarOpen: false,
+
+            setPage(page) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(page).classList.add('active');
+                this.currentPage = page;
+                
+                if (page !== 'dashboard') {
+                    this.closeSidebar();
+                } else {
+                    this.setActiveView('dashboard');
+                }
+            },
+
+            setActiveView(view) {
+                document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+                document.getElementById('view-' + view).classList.add('active');
+                
+                document.querySelectorAll('.sidebar-menu-item').forEach(item => item.classList.remove('active'));
+                document.getElementById('menu-' + view).classList.add('active');
+                
+                this.activeView = view;
+                
+                if (window.innerWidth <= 768) {
+                    this.closeSidebar();
+                }
+            },
+
+            openSidebar() {
+                document.getElementById('sidebarDrawer').classList.remove('closed');
+                document.getElementById('sidebarOverlay').classList.add('visible');
+                this.sidebarOpen = true;
+            },
+
+            closeSidebar() {
+                document.getElementById('sidebarDrawer').classList.add('closed');
+                document.getElementById('sidebarOverlay').classList.remove('visible');
+                this.sidebarOpen = false;
+            },
+
+            togglePassword() {
+                const input = document.getElementById('password');
+                input.type = input.type === 'password' ? 'text' : 'password';
+            },
+
+            handleDragOver(e) {
+                e.preventDefault();
+                document.querySelector('.upload-box').classList.add('drag-over');
+            },
+
+            handleDragLeave(e) {
+                document.querySelector('.upload-box').classList.remove('drag-over');
+            },
+
+            handleDrop(e) {
+                e.preventDefault();
+                document.querySelector('.upload-box').classList.remove('drag-over');
+                this.simulateUpload();
+            },
+
+            handleFileSelect(e) {
+                if (e.target.files.length > 0) {
+                    this.simulateUpload();
+                }
+            },
+
+            simulateUpload() {
+                const status = document.getElementById('uploadStatus');
+                status.classList.add('active');
+                
+                setTimeout(() => {
+                    status.classList.remove('active');
+                    alert('Vídeo processado com sucesso! 4 clips foram gerados.');
+                }, 3000);
+            }
+        };
+
+        window.addEventListener('load', () => {
+            appState.setPage('landing');
+        });
+    </script>
+</body>
+</html>
