@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipMind - Plataforma de Cortes Virais com IA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0D1B2A 0%, #1a2d3a 100%);
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 40px;
+            border-bottom: 1px solid #1a2d3a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(13, 27, 42, 0.95);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #C9A84C;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav a {
+            color: #B0B0B0;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 14px;
+        }
+
+        nav a:hover {
+            color: #C9A84C;
+        }
+
+        /* Hero Section */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 40px;
+            text-align: center;
+        }
+
+        .hero-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #C9A84C;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .description {
+            font-size: 16px;
+            color: #B0B0B0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: #C9A84C;
+            color: #0D1B2A;
+            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #E0C158;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #C9A84C;
+            border: 2px solid #C9A84C;
+        }
+
+        .btn-secondary:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        /* Trust Signals */
+        .trust-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            background: rgba(26, 45, 58, 0.3);
+            border-radius: 15px;
+            margin-bottom: 60px;
+        }
+
+        .trust-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .trust-item {
+            text-align: center;
+        }
+
+        .trust-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .trust-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .trust-text {
+            font-size: 14px;
+            color: #B0B0B0;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #FFFFFF;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .pricing-card {
+            background: rgba(13, 27, 42, 0.95);
+            border: 2px solid #1a2d3a;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .pricing-card:hover {
+            border-color: #C9A84C;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(201, 168, 76, 0.2);
+        }
+
+        .pricing-card.featured {
+            border-color: #C9A84C;
+            transform: scale(1.05);
+        }
+
+        .plan-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #C9A84C;
+            margin-bottom: 15px;
+        }
+
+        .plan-price {
+            font-size: 36px;
+            font-weight: bold;
+            color: #FFFFFF;
+            margin-bottom: 10px;
+        }
+
+        .plan-price small {
+            font-size: 14px;
+            color: #B0B0B0;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            color: #B0B0B0;
+            border-bottom: 1px solid #1a2d3a;
+            font-size: 14px;
+        }
+
+        .plan-features li:before {
+            content: "✓ ";
+            color: #C9A84C;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .plan-cta {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: transparent;
+            color: #C9A84C;
+            border: 2px solid #C9A84C;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .plan-cta:hover {
+            background: #C9A84C;
+            color: #0D1B2A;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            margin-bottom: 60px;
+        }
+
+        .faq-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: rgba(13, 27, 42, 0.95);
+            border: 1px solid #1a2d3a;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            background: rgba(201, 168, 76, 0.1);
+        }
+
+        .faq-toggle {
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-toggle {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 20px;
+            color: #B0B0B0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 0 20px 20px 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: #000000;
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid #1a2d3a;
+            margin-top: 60px;
+        }
+
+        footer p {
+            color: #808080;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+
+        footer a {
+            color: #C9A84C;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            nav { flex-direction: column; gap: 20px; }
+            nav ul { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px 20px; }
+            h1 { font-size: 32px; }
+            .hero { padding: 40px 20px; }
+            .cta-buttons { flex-direction: column; }
+            .btn { width: 100%; }
+            .pricing-card.featured { transform: scale(1); }
+            .section-title { font-size: 28px; }
+            .trust-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <a href="#" class="logo">🎬 ClipMind</a>
+            <ul>
+                <li><a href="#trust">Por Que ClipMind</a></li>
+                <li><a href="#pricing">Planos</a></li>
+                <li><a href="#faq">FAQ</a></li>
+                <li><a href="https://github.com/Luiza140528/clipmind" target="_blank">GitHub</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-icon">🎬</div>
+        <h1>ClipMind — Plataforma de Cortes Virais com IA</h1>
+        <p class="tagline">A mente inteligente por trás do seu viral</p>
+        <p class="description">
+            Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. 
+            Otimizado para políticos. Powered by IA.
+        </p>
+        <div class="cta-buttons">
+            <a href="dashboard.html" class="btn btn-primary">🚀 Começar Agora</a>
+            <a href="https://github.com/Luiza140528/clipmind" target="_blank" class="btn btn-secondary">📚 GitHub</a>
+        </div>
+    </section>
+
+    <!-- Trust Signals -->
+    <section class="trust-section" id="trust">
+        <div class="trust-grid">
+            <div class="trust-item">
+                <div class="trust-icon">✅</div>
+                <div class="trust-title">100% Seguro</div>
+                <div class="trust-text">Dados criptografados com TLS 1.3</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon">🔒</div>
+                <div class="trust-title">Privacidade Garantida</div>
+                <div class="trust-text">RLS ativo no Supabase</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon">⚡</div>
+                <div class="trust-title">Processamento Rápido</div>
+                <div class="trust-text">Clips gerados em 5 minutos</div>
+            </div>
+            <div class="trust-item">
+                <div class="trust-icon">🤖</div>
+                <div class="trust-title">IA Inteligente</div>
+                <div class="trust-text">Claude Haiku + Whisper</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-section" id="pricing">
+        <h2 class="section-title">💰 Planos Simples e Transparentes</h2>
+        <div class="pricing-grid">
+            <!-- Free -->
+            <div class="pricing-card">
+                <div class="plan-name">Free</div>
+                <div class="plan-price">R$ <strong>0</strong><small>/mês</small></div>
+                <ul class="plan-features">
+                    <li>3 clips/mês</li>
+                    <li>Até 30 minutos de vídeo</li>
+                    <li>Suporte por email</li>
+                </ul>
+                <button class="plan-cta">Começar Grátis</button>
+            </div>
+
+            <!-- Starter -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">R$ <strong>197</strong><small>/mês</small></div>
+                <ul class="plan-features">
+                    <li>30 clips/mês</li>
+                    <li>Vídeos até 1 hora</li>
+                    <li>Suporte prioritário</li>
+                    <li>12% comissão de sucesso</li>
+                </ul>
+                <button class="plan-cta">Escolher Starter</button>
+            </div>
+
+            <!-- Pro (Featured) -->
+            <div class="pricing-card featured">
+                <div class="plan-name">Pro ⭐</div>
+                <div class="plan-price">R$ <strong>397</strong><small>/mês</small></div>
+                <ul class="plan-features">
+                    <li>100 clips/mês</li>
+                    <li>Vídeos ilimitados</li>
+                    <li>Suporte 24/7</li>
+                    <li>10% comissão de sucesso</li>
+                    <li>Analytics avançado</li>
+                </ul>
+                <button class="plan-cta">Escolher Pro</button>
+            </div>
+
+            <!-- Elite -->
+            <div class="pricing-card">
+                <div class="plan-name">Elite</div>
+                <div class="plan-price">R$ <strong>697</strong><small>/mês</small></div>
+                <ul class="plan-features">
+                    <li>Clips ilimitados</li>
+                    <li>Prioridade máxima</li>
+                    <li>Dedicated manager</li>
+                    <li>8% comissão de sucesso</li>
+                    <li>API acesso completo</li>
+                </ul>
+                <button class="plan-cta">Escolher Elite</button>
+            </div>
+        </div>
+        <p style="text-align: center; color: #B0B0B0; margin-top: 30px; font-size: 14px;">
+            + R$ 200 de ativação por CNPJ | Sem contrato de longa duração
+        </p>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <h2 class="section-title">❓ Perguntas Frequentes</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como funciona o ClipMind?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Você faz upload de um vídeo (ou compartilha um link do YouTube), nosso sistema analisa usando IA, identifica os momentos mais virais e gera clips automáticos prontos para TikTok, Reels e Shorts.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Qual é o tempo de processamento?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Em média, um vídeo de 1 hora é processado em 5 minutos. O tempo pode variar dependendo do tamanho e duração do vídeo.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Preciso de conhecimento técnico?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Não! O ClipMind foi feito para ser intuitivo. Se você consegue fazer upload de um vídeo, consegue usar o ClipMind.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Posso cancelar a qualquer momento?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Sim! Sem contrato de longa duração. Você pode cancelar seu plano a qualquer momento sem penalidades.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Meus vídeos estão seguros?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Absolutamente! Todos os dados são criptografados com TLS 1.3 e armazenados de forma segura no Supabase. Você tem controle total sobre seus clips.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Como funciona a comissão de sucesso?</span>
+                    <span class="faq-toggle">▼</span>
+                </div>
+                <div class="faq-answer">
+                    Além da mensalidade, você paga uma pequena comissão apenas quando seus clips geram engajamento ou vendas. É uma forma de compartilhar o sucesso com você.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>ClipMind © 2026 — Transforme vídeos em estratégia</p>
+        <p>Desenvolvido por <strong>Luiza Costa Soares</strong> | <a href="https://instagram.com/lcosta.real" target="_blank">A Seta do Interior 🏹</a></p>
+        <p style="margin-top: 20px; font-size: 12px;">
+            <a href="#">Política de Privacidade</a> | 
+            <a href="#">Termos de Serviço</a> | 
+            <a href="mailto:contato@clipmind.com">Contato</a>
+        </p>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
