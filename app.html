@@ -817,23 +817,23 @@
                         <button class="btn-upgrade" onclick="alert('Upgrade para Pro ou Elite!')">[ Upgrade ]</button>
                     </div>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill"></div>
+                        <div class="progress-bar-fill" id="clipsProgressFill"></div>
                     </div>
-                    <div class="progress-text">47 / 100 clips</div>
+                    <div class="progress-text" id="clipsProgressText">Carregando...</div>
                 </div>
 
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">Seu Plano</div>
-                        <div class="metric-value">Pro</div>
+                        <div class="metric-value" id="planValue">...</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Views Totais</div>
-                        <div class="metric-value">125K</div>
+                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Engajamento</div>
-                        <div class="metric-value">8.4K</div>
+                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
                     </div>
                 </div>
 
@@ -914,28 +914,26 @@
 
             <!-- VIEW: CLIPS -->
             <div id="view-clips" class="view-content">
-                <h2 style="color: #C9A84C; margin-bottom: 20px;">📁 Meus Clips (47)</h2>
-                <p style="color: #B0B0B0;">Lista completa de todos os seus clips gerados. Total de 47 clips em sua conta.</p>
+                <h2 style="color: #C9A84C; margin-bottom: 20px;">📁 Meus Clips (<span id="clipsCountHeader">...</span>)</h2>
+                <p style="color: #B0B0B0;">Lista completa de todos os seus clips gerados. Total de <span id="clipsCountText">...</span> clips em sua conta.</p>
             </div>
 
             <!-- VIEW: ANALYTICS -->
             <div id="view-analytics" class="view-content">
                 <h2 style="color: #C9A84C; margin-bottom: 20px;">📈 Analytics</h2>
+                <p style="color: #B0B0B0; margin-bottom: 20px;">Acompanhamento de visualizações e engajamento por rede social está em desenvolvimento e chega em breve.</p>
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">Views Totais</div>
-                        <div class="metric-value">125K</div>
-                        <div class="metric-growth">⬆️ +25% este mês</div>
+                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Engajamento</div>
-                        <div class="metric-value">8.4K</div>
-                        <div class="metric-growth">⬆️ +15% este mês</div>
+                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Taxa de Conversão</div>
-                        <div class="metric-value">6.7%</div>
-                        <div class="metric-growth">⬆️ +2% este mês</div>
+                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
                     </div>
                 </div>
             </div>
@@ -1043,6 +1041,7 @@
                     await this.performLogin(email, password);
                     this.setPage('dashboard');
                     this.loadClips();
+                    this.loadUserData();
                 } catch (err) {
                     errorBox.textContent = err.message === 'Failed to fetch'
                         ? 'Não foi possível conectar ao servidor. Tente novamente.'
@@ -1104,6 +1103,7 @@
                         await this.performLogin(email, password);
                         this.setPage('dashboard');
                         this.loadClips();
+                        this.loadUserData();
                         return;
                     } catch (loginErr) {
                         document.getElementById('email').value = email;
@@ -1132,6 +1132,43 @@
                 return localStorage.getItem('clipmind_token');
             },
 
+            // ---------- DADOS REAIS DO USUÁRIO (plano e créditos) ----------
+            async loadUserData() {
+                const token = this.getToken();
+                if (!token) return;
+
+                try {
+                    const res = await fetch(`${API_URL}/api/user/me`, {
+                        headers: { Authorization: `Bearer ${token}` },
+                    });
+
+                    if (res.status === 401) {
+                        this.logout();
+                        return;
+                    }
+
+                    const data = await res.json();
+                    if (!res.ok) return;
+
+                    const planLabels = { free: 'Free', starter: 'Starter', pro: 'Pro', agency: 'Agency' };
+                    document.getElementById('planValue').textContent = planLabels[data.plan] || data.plan;
+
+                    const fill = document.getElementById('clipsProgressFill');
+                    const text = document.getElementById('clipsProgressText');
+
+                    if (data.clips_limit === null) {
+                        fill.style.width = '100%';
+                        text.textContent = `${data.clips_used ?? 0} clips (ilimitado)`;
+                    } else {
+                        const pct = data.clips_limit > 0 ? Math.min(100, (data.clips_used / data.clips_limit) * 100) : 0;
+                        fill.style.width = `${pct}%`;
+                        text.textContent = `${data.clips_used} / ${data.clips_limit} clips`;
+                    }
+                } catch (err) {
+                    // silencioso: se falhar, mantém o "Carregando..." em vez de quebrar a tela
+                }
+            },
+
             // ---------- CLIPS REAIS ----------
             async loadClips() {
                 const tbody = document.getElementById('clipsTableBody');
@@ -1151,6 +1188,9 @@
 
                     const data = await res.json();
                     const clips = data.clips || [];
+
+                    document.getElementById('clipsCountHeader').textContent = clips.length;
+                    document.getElementById('clipsCountText').textContent = clips.length;
 
                     if (clips.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #B0B0B0;">Nenhum clip ainda. Cole um link do YouTube acima para gerar o primeiro.</td></tr>';
@@ -1236,6 +1276,7 @@
                             button.disabled = false;
                             document.getElementById('youtubeUrlInput').value = '';
                             this.loadClips();
+                            this.loadUserData();
                             return;
                         }
 
@@ -1261,6 +1302,7 @@
             if (appState.getToken() && window.location.hash !== '#login') {
                 appState.setPage('dashboard');
                 appState.loadClips();
+                appState.loadUserData();
                 return;
             }
             const startPage = window.location.hash === '#login' ? 'login' : 'landing';
