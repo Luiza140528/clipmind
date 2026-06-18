@@ -179,7 +179,7 @@ app.post('/api/process', authenticateUser, async (req, res) => {
     logger(`Job created: ${job_id} for user ${user_id}`);
 
     // Processar de forma assíncrona (não bloqueia a resposta)
-    processVideoAsync(job_id, user_id, youtube_url);
+    processVideoAsync(job_id, user_id, youtube_url, null, userData.plan);
 
     res.json({
       job_id,
@@ -239,7 +239,7 @@ app.post('/api/process/upload', authenticateUser, upload.single('video'), async 
 
     logger(`Upload job created: ${job_id} for user ${user_id}`);
 
-    processVideoAsync(job_id, user_id, null, videoPath);
+    processVideoAsync(job_id, user_id, null, videoPath, userData.plan);
 
     res.json({
       job_id,
@@ -253,9 +253,12 @@ app.post('/api/process/upload', authenticateUser, upload.single('video'), async 
 });
 
 // Função assíncrona de processamento (roda em background)
-async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath = null) {
+async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath = null, plan = 'free') {
   try {
     logger(`Starting processing for job ${job_id}`);
+
+    // Marca d'água "ClipMind" só no plano Free — é o incentivo pro upgrade
+    const applyWatermark = plan === 'free';
 
     // 1. OBTER O VÍDEO: baixar do YouTube, ou usar o arquivo já enviado do celular
     let videoPath;
@@ -284,7 +287,8 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
         videoPath,
         moment.start,
         moment.end,
-        moment.reason
+        moment.reason,
+        applyWatermark
       );
 
       // 5. UPLOAD PARA SUPABASE STORAGE
@@ -306,6 +310,7 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
         end_time: moment.end,
         duration: moment.end - moment.start,
         storage_url: storagePath,
+        virality_score: moment.score ?? null,
       });
 
       clipIds.push(clipId);
@@ -430,19 +435,22 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
       "start": 45,
       "end": 75,
       "reason": "Promessa sobre saúde com tom decisivo",
-      "appeal": "promessa"
+      "appeal": "promessa",
+      "score": 8
     },
     {
       "index": 2,
       "start": 120,
       "end": 150,
       "reason": "Crítica ao adversário com dados específicos",
-      "appeal": "crítica"
+      "appeal": "crítica",
+      "score": 6
     }
   ]
 }
 
-Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional, força`;
+Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional, força
+"score" é uma nota de 0 a 10 do potencial de viralização desse momento específico, considerando os critérios acima.`;
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
@@ -471,17 +479,18 @@ Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional
     logger(`Claude analysis error: ${error.message}`);
     // Fallback: retornar momentos básicos se Claude falhar
     return [
-      { index: 1, start: 30, end: 60, reason: 'Momento político importante', appeal: 'promessa' },
-      { index: 2, start: 120, end: 150, reason: 'Posicionamento claro', appeal: 'força' },
-      { index: 3, start: 200, end: 230, reason: 'Crítica bem colocada', appeal: 'crítica' },
+      { index: 1, start: 30, end: 60, reason: 'Momento político importante', appeal: 'promessa', score: 5 },
+      { index: 2, start: 120, end: 150, reason: 'Posicionamento claro', appeal: 'força', score: 5 },
+      { index: 3, start: 200, end: 230, reason: 'Crítica bem colocada', appeal: 'crítica', score: 5 },
     ];
   }
 }
 
 // Gerar corte com FFmpeg (OTIMIZADO PARA POLÍTICO - Dark Navy + Gold)
-async function generateClip(videoPath, startSeconds, endSeconds, reason) {
+async function generateClip(videoPath, startSeconds, endSeconds, reason, applyWatermark = false) {
   const clipPath = `/tmp/clip_${Date.now()}.mp4`;
   const duration = endSeconds - startSeconds;
+  let watermarkPath = null;
 
   try {
     // Criar SRT file com legenda estilizada
@@ -491,35 +500,52 @@ async function generateClip(videoPath, startSeconds, endSeconds, reason) {
 ${reason}`;
     fs.writeFileSync(srtPath, srtContent);
 
-    // Criar imagem de watermark ClipMind (texto simples com logo)
-    const watermarkPath = `/tmp/watermark_${Date.now()}.png`;
-    const watermarkCommand = `convert -size 200x40 xc:transparent \
-      -font Arial -pointsize 14 -fill "#C9A84C" \
-      -gravity Center -annotate +0+0 "ClipMind" \
-      "${watermarkPath}"`;
-    
-    try {
-      await execAsync(watermarkCommand, { timeout: 10000 });
-    } catch (e) {
-      logger(`Watermark creation skipped: ${e.message}`);
+    const reframeFilter = `scale=-2:1920,crop=1080:1920`;
+    const subtitleFilter = `subtitles='${srtPath}':force_style='FontName=Arial,FontSize=22,PrimaryColour=&HC9A84C&,SecondaryColour=&H0D1B2A&,OutlineColour=&H000000&,Outline=3,Shadow=2,Spacing=1,Alignment=2'`;
+    const baseFilter = `${reframeFilter},${subtitleFilter}`;
+
+    let ffmpegCommand;
+
+    if (applyWatermark) {
+      // Criar imagem de watermark ClipMind (texto simples com logo) - só plano Free
+      watermarkPath = `/tmp/watermark_${Date.now()}.png`;
+      const watermarkCommand = `convert -size 200x40 xc:transparent \
+        -font Arial -pointsize 14 -fill "#C9A84C" \
+        -gravity Center -annotate +0+0 "ClipMind" \
+        "${watermarkPath}"`;
+
+      try {
+        await execAsync(watermarkCommand, { timeout: 10000 });
+      } catch (e) {
+        logger(`Watermark creation skipped: ${e.message}`);
+        watermarkPath = null;
+      }
     }
 
-    // FFmpeg command: cortar + legenda estilizada + watermark
-    // Estilo: Dark Navy fundo, Gold destaque, grande e legível
-    const ffmpegCommand = `ffmpeg -i "${videoPath}" \
-      -ss ${startSeconds} -to ${endSeconds} \
-      -vf "subtitles='${srtPath}':force_style='FontName=Arial,FontSize=22,PrimaryColour=&HC9A84C&,SecondaryColour=&H0D1B2A&,OutlineColour=&H000000&,Outline=3,Shadow=2,Spacing=1,Alignment=2'" \
-      -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
-      "${clipPath}" -y`;
+    if (watermarkPath && fs.existsSync(watermarkPath)) {
+      // Corte + reformatação vertical + legenda + marca d'água no canto inferior direito
+      ffmpegCommand = `ffmpeg -i "${videoPath}" -ss ${startSeconds} -to ${endSeconds} -i "${watermarkPath}" \
+        -filter_complex "[0:v]${baseFilter}[base];[base][1:v]overlay=W-w-20:H-h-20[outv]" \
+        -map "[outv]" -map 0:a? \
+        -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
+        "${clipPath}" -y`;
+    } else {
+      // FFmpeg command: cortar + reformatar vertical + legenda estilizada, sem marca d'água (planos pagos)
+      ffmpegCommand = `ffmpeg -i "${videoPath}" \
+        -ss ${startSeconds} -to ${endSeconds} \
+        -vf "${baseFilter}" \
+        -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
+        "${clipPath}" -y`;
+    }
 
     await execAsync(ffmpegCommand, { timeout: 120000 });
-    logger(`Clip generated with Dark Navy + Gold styling: ${clipPath}`);
+    logger(`Clip generated (watermark: ${!!watermarkPath}): ${clipPath}`);
 
     // Limpar SRT
     fs.unlinkSync(srtPath);
-    
+
     // Limpar watermark se foi criado
-    if (fs.existsSync(watermarkPath)) {
+    if (watermarkPath && fs.existsSync(watermarkPath)) {
       fs.unlinkSync(watermarkPath);
     }
 
@@ -547,12 +573,8 @@ async function uploadClipToStorage(clipPath, user_id, clipId) {
       throw error;
     }
 
-    const publicUrl = supabase.storage
-      .from('clipmind-videos')
-      .getPublicUrl(storagePath).data.publicUrl;
-
-    logger(`Clip uploaded to storage: ${publicUrl}`);
-    return publicUrl;
+    logger(`Clip uploaded to storage: ${storagePath}`);
+    return storagePath;
   } catch (error) {
     logger(`Storage upload error: ${error.message}`);
     throw new Error('Failed to upload clip');
@@ -579,7 +601,13 @@ app.get('/api/clips', authenticateUser, async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    res.json({ clips: data, total: data.length });
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const clips = data.map((clip) => ({
+      ...clip,
+      share_url: `${baseUrl}/c/${clip.id}`,
+    }));
+
+    res.json({ clips, total: clips.length });
   } catch (error) {
     logger(`Get clips error: ${error.message}`);
     res.status(500).json({ error: 'Failed to fetch clips' });
@@ -681,7 +709,7 @@ app.get('/api/process/:job_id', authenticateUser, async (req, res) => {
 // USUÁRIO (plano e créditos reais)
 // ============================================
 
-const PLAN_LIMITS = { free: 3, starter: 30, pro: 100, agency: Infinity };
+const PLAN_LIMITS = { free: 3, starter: 30, pro: 100, elite: Infinity };
 
 app.get('/api/user/me', authenticateUser, async (req, res) => {
   try {
@@ -735,6 +763,40 @@ app.get('/api/user/me', authenticateUser, async (req, res) => {
   } catch (error) {
     logger(`Get user error: ${error.message}`);
     res.status(500).json({ error: 'Failed to fetch user data' });
+  }
+});
+
+// ============================================
+// LINK CURTO / QR CODE (acesso público ao clip)
+// ============================================
+
+app.get('/c/:clip_id', async (req, res) => {
+  try {
+    const { clip_id } = req.params;
+
+    const { data: clip, error } = await supabase
+      .from('clips')
+      .select('storage_url')
+      .eq('id', clip_id)
+      .single();
+
+    if (error || !clip) {
+      return res.status(404).send('Clip não encontrado');
+    }
+
+    const { data: signed, error: signError } = await supabase.storage
+      .from('clipmind-videos')
+      .createSignedUrl(clip.storage_url, 60 * 60 * 24 * 7); // 7 dias
+
+    if (signError || !signed) {
+      logger(`Sign URL error: ${signError?.message}`);
+      return res.status(500).send('Não foi possível gerar o link do vídeo');
+    }
+
+    res.redirect(signed.signedUrl);
+  } catch (error) {
+    logger(`Short link error: ${error.message}`);
+    res.status(500).send('Erro ao acessar o clip');
   }
 });
 
