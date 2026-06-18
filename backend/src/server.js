@@ -83,13 +83,17 @@ app.post('/api/auth/signup', async (req, res) => {
     }
 
     // Inserir user no banco com plano FREE
-    await supabase.from('users').insert({
+    const { error: insertError } = await supabase.from('users').insert({
       id: data.user.id,
       email,
       name: name || '',
       plan: 'free',
       credits: 3, // Free = 3 cortes/mês
     });
+
+    if (insertError) {
+      logger(`Insert user row error: ${insertError.message}`);
+    }
 
     logger(`User signed up: ${email}`);
     res.status(201).json({ user_id: data.user.id, email });
@@ -616,14 +620,38 @@ app.get('/api/user/me', authenticateUser, async (req, res) => {
   try {
     const user_id = req.user.id;
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('users')
       .select('email, name, plan, credits')
       .eq('id', user_id)
-      .single();
+      .maybeSingle();
 
     if (error) {
+      logger(`Get user error: ${error.message}`);
       return res.status(500).json({ error: error.message });
+    }
+
+    // Se a conta de autenticação existe mas não tem linha na tabela users
+    // (ex: o insert do signup falhou silenciosamente), cria agora com plano free.
+    if (!data) {
+      const { data: created, error: createError } = await supabase
+        .from('users')
+        .insert({
+          id: user_id,
+          email: req.user.email,
+          name: '',
+          plan: 'free',
+          credits: 3,
+        })
+        .select('email, name, plan, credits')
+        .single();
+
+      if (createError) {
+        logger(`Auto-create user row error: ${createError.message}`);
+        return res.status(500).json({ error: createError.message });
+      }
+
+      data = created;
     }
 
     const limit = PLAN_LIMITS[data.plan] ?? PLAN_LIMITS.free;
