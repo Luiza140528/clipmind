@@ -850,7 +850,7 @@
                     <div style="margin: 18px 0; color: #B0B0B0; font-size: 12px;">— OU —</div>
 
                     <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime" style="display: none;" onchange="appState.handleVideoFileSelect(event)">
-                    <button class="btn-start" id="uploadFileButton" style="background: transparent; border: 1px solid #C9A84C; color: #C9A84C;" onclick="document.getElementById('videoFileInput').click();">📤 Enviar Vídeo do Celular</button>
+                    <button class="btn-start" id="uploadFileButton" style="background: transparent; border: 1px solid #C9A84C; color: #C9A84C;" onclick="document.getElementById('videoFileInput').click();">📁 Buscar Vídeo da Galeria</button>
                     <div id="selectedFileName" style="color: #B0B0B0; font-size: 12px; margin-top: 8px;"></div>
 
                     <div class="upload-status" id="uploadStatus">🤖 Processando com IA: isso pode levar alguns minutos...</div>
@@ -1371,6 +1371,16 @@
                 const status = document.getElementById('uploadStatus');
                 const button = buttonOverride || document.getElementById('processButton');
                 const token = this.getToken();
+                let checkCount = 0;
+
+                const etapas = [
+                    '🎵 Extraindo áudio do vídeo...',
+                    '🗣️ Transcrevendo o discurso com IA...',
+                    '🧠 Identificando os melhores momentos...',
+                    '✂️ Cortando e formatando os clips...',
+                    '☁️ Salvando seus clips...',
+                    '⏳ Finalizando, quase pronto...',
+                ];
 
                 const check = async () => {
                     try {
@@ -1380,7 +1390,7 @@
                         const data = await res.json();
 
                         if (data.status === 'completed') {
-                            status.textContent = '✅ Pronto! Seus clips foram gerados.';
+                            status.innerHTML = '✅ <strong>Pronto! Seus clips foram gerados.</strong>';
                             button.disabled = false;
                             document.getElementById('youtubeUrlInput').value = '';
                             document.getElementById('videoFileInput').value = '';
@@ -1391,20 +1401,33 @@
                         }
 
                         if (data.status === 'failed') {
-                            status.textContent = '❌ O processamento falhou. Tente outro vídeo.';
+                            status.innerHTML = '❌ O processamento falhou. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #C9A84C;color:#C9A84C;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
                             button.disabled = false;
                             return;
                         }
 
-                        // ainda processando, checar de novo em 8s
+                        // Mostrar etapa atual com base no tempo decorrido
+                        const etapa = etapas[Math.min(checkCount, etapas.length - 1)];
+                        status.textContent = etapa;
+                        checkCount++;
+
+                        // checar de novo em 8s
                         setTimeout(check, 8000);
                     } catch (err) {
-                        status.textContent = '❌ Erro ao verificar o status do processamento.';
+                        status.innerHTML = '❌ Conexão perdida. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #C9A84C;color:#C9A84C;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
                         button.disabled = false;
                     }
                 };
 
                 check();
+            },
+
+            retryUpload() {
+                const status = document.getElementById('uploadStatus');
+                status.textContent = '';
+                status.classList.remove('active');
+                document.getElementById('processButton').disabled = false;
+                document.getElementById('uploadFileButton').disabled = false;
             },
         };
 
