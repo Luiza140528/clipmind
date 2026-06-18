@@ -368,10 +368,22 @@ async function downloadVideo(url, job_id) {
 
 // Transcrever com Whisper
 async function transcribeVideo(videoPath) {
+  const audioPath = `${videoPath}_audio.mp3`;
+
+  try {
+    // Extrair só o áudio do vídeo (menor e aceito pelo Whisper sem problemas)
+    await execAsync(`ffmpeg -i "${videoPath}" -vn -acodec libmp3lame -q:a 4 "${audioPath}" -y`, { timeout: 120000 });
+  } catch (err) {
+    logger(`Audio extraction failed: ${err.message} — tentando enviar vídeo direto`);
+  }
+
+  const filePath = fs.existsSync(audioPath) ? audioPath : videoPath;
+  const fileName = filePath.endsWith('.mp3') ? 'audio.mp3' : 'audio.mp4';
+
   try {
     const formData = new FormData();
-    const fileStream = fs.createReadStream(videoPath);
-    formData.append('file', fileStream);
+    const fileStream = fs.createReadStream(filePath);
+    formData.append('file', fileStream, { filename: fileName });
     formData.append('model', 'whisper-1');
     formData.append('language', 'pt');
 
@@ -381,16 +393,23 @@ async function transcribeVideo(videoPath) {
       {
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'multipart/form-data',
+          ...formData.getHeaders(),
         },
+        maxContentLength: Infinity,
+        maxBodyLength: Infinity,
       }
     );
 
     logger(`Transcription complete: ${response.data.text.substring(0, 100)}...`);
     return response.data.text;
   } catch (error) {
-    logger(`Transcription error: ${error.message}`);
+    logger(`Transcription error: ${error.response?.data ? JSON.stringify(error.response.data) : error.message}`);
     throw new Error('Failed to transcribe video');
+  } finally {
+    // Limpar o arquivo de áudio temporário
+    if (fs.existsSync(audioPath)) {
+      try { fs.unlinkSync(audioPath); } catch (_) {}
+    }
   }
 }
 
