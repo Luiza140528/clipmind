@@ -839,12 +839,20 @@
 
                 <div class="upload-box">
                     <div class="upload-icon">📹</div>
-                    <div class="upload-title">Gerar Clips de um Vídeo do YouTube</div>
-                    <div class="upload-subtitle">Cole o link do vídeo que você quer transformar em cortes</div>
+                    <div class="upload-title">Gerar Clips de um Discurso</div>
+                    <div class="upload-subtitle">Cole o link de um vídeo do YouTube, ou envie um vídeo gravado direto do celular</div>
+
                     <div class="form-group" style="max-width: 400px; margin: 15px auto 0;">
                         <input type="text" id="youtubeUrlInput" placeholder="https://youtube.com/watch?v=...">
                     </div>
-                    <button class="btn-start" id="processButton" style="margin-top: 10px;" onclick="appState.startProcessing()">🤖 Gerar Clips</button>
+                    <button class="btn-start" id="processButton" style="margin-top: 10px;" onclick="appState.startProcessing()">🤖 Gerar Clips do Link</button>
+
+                    <div style="margin: 18px 0; color: #B0B0B0; font-size: 12px;">— OU —</div>
+
+                    <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime" style="display: none;" onchange="appState.handleVideoFileSelect(event)">
+                    <button class="btn-start" id="uploadFileButton" style="background: transparent; border: 1px solid #C9A84C; color: #C9A84C;" onclick="document.getElementById('videoFileInput').click();">📤 Enviar Vídeo do Celular</button>
+                    <div id="selectedFileName" style="color: #B0B0B0; font-size: 12px; margin-top: 8px;"></div>
+
                     <div class="upload-status" id="uploadStatus">🤖 Processando com IA: isso pode levar alguns minutos...</div>
                 </div>
 
@@ -1265,9 +1273,61 @@
                 }
             },
 
-            async pollJob(job_id) {
+            handleVideoFileSelect(event) {
+                const file = event.target.files[0];
+                const label = document.getElementById('selectedFileName');
+
+                if (!file) {
+                    label.textContent = '';
+                    return;
+                }
+
+                const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+                label.textContent = `Selecionado: ${file.name} (${sizeMB} MB)`;
+
+                this.startUploadProcessing(file);
+            },
+
+            async startUploadProcessing(file) {
                 const status = document.getElementById('uploadStatus');
-                const button = document.getElementById('processButton');
+                const button = document.getElementById('uploadFileButton');
+                const token = this.getToken();
+
+                if (file.size > 500 * 1024 * 1024) {
+                    alert('O vídeo precisa ter no máximo 500MB.');
+                    return;
+                }
+
+                button.disabled = true;
+                status.textContent = '🤖 Enviando vídeo do celular...';
+                status.classList.add('active');
+
+                try {
+                    const formData = new FormData();
+                    formData.append('video', file);
+
+                    const res = await fetch(`${API_URL}/api/process/upload`, {
+                        method: 'POST',
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: formData,
+                    });
+                    const data = await res.json();
+
+                    if (!res.ok) {
+                        throw new Error(data.error || 'Não foi possível enviar o vídeo');
+                    }
+
+                    status.textContent = '🤖 Processando com IA: transcrevendo e cortando o discurso...';
+                    this.pollJob(data.job_id, button);
+                } catch (err) {
+                    status.textContent = `❌ ${err.message}`;
+                    button.disabled = false;
+                }
+            },
+
+            async pollJob(job_id, buttonOverride) {
+                const status = document.getElementById('uploadStatus');
+                const button = buttonOverride || document.getElementById('processButton');
                 const token = this.getToken();
 
                 const check = async () => {
@@ -1281,6 +1341,8 @@
                             status.textContent = '✅ Pronto! Seus clips foram gerados.';
                             button.disabled = false;
                             document.getElementById('youtubeUrlInput').value = '';
+                            document.getElementById('videoFileInput').value = '';
+                            document.getElementById('selectedFileName').textContent = '';
                             this.loadClips();
                             this.loadUserData();
                             return;
