@@ -607,6 +607,43 @@ app.get('/api/process/:job_id', authenticateUser, async (req, res) => {
 });
 
 // ============================================
+// USUÁRIO (plano e créditos reais)
+// ============================================
+
+const PLAN_LIMITS = { free: 3, starter: 30, pro: 100, agency: Infinity };
+
+app.get('/api/user/me', authenticateUser, async (req, res) => {
+  try {
+    const user_id = req.user.id;
+
+    const { data, error } = await supabase
+      .from('users')
+      .select('email, name, plan, credits')
+      .eq('id', user_id)
+      .single();
+
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+
+    const limit = PLAN_LIMITS[data.plan] ?? PLAN_LIMITS.free;
+    const used = limit === Infinity ? null : Math.max(0, limit - data.credits);
+
+    res.json({
+      email: data.email,
+      name: data.name,
+      plan: data.plan,
+      credits_remaining: data.credits,
+      clips_used: used,
+      clips_limit: limit === Infinity ? null : limit,
+    });
+  } catch (error) {
+    logger(`Get user error: ${error.message}`);
+    res.status(500).json({ error: 'Failed to fetch user data' });
+  }
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
 
