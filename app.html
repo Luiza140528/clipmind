@@ -665,21 +665,21 @@
                 <div class="plan-card">
                     <div class="plan-name">Free</div>
                     <div class="plan-price">R$ 0</div>
-                    <div class="plan-feature">3 clips/mês</div>
+                    <div class="plan-feature">3 clips/mês (com marca d'água)</div>
                 </div>
                 <div class="plan-card">
                     <div class="plan-name">Starter</div>
-                    <div class="plan-price">R$ 197</div>
+                    <div class="plan-price">R$ 49,90</div>
                     <div class="plan-feature">30 clips/mês</div>
                 </div>
                 <div class="plan-card">
                     <div class="plan-name">Pro</div>
-                    <div class="plan-price">R$ 397</div>
+                    <div class="plan-price">R$ 97,90</div>
                     <div class="plan-feature">100 clips/mês</div>
                 </div>
                 <div class="plan-card">
                     <div class="plan-name">Elite</div>
-                    <div class="plan-price">R$ 697</div>
+                    <div class="plan-price">R$ 197,90</div>
                     <div class="plan-feature">Ilimitado</div>
                 </div>
             </div>
@@ -862,13 +862,14 @@
                         <thead>
                             <tr>
                                 <th>Nome do Clip</th>
+                                <th>Nota</th>
                                 <th>Duração</th>
                                 <th>Data</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="clipsTableBody">
-                            <tr><td colspan="4" style="text-align: center; color: #B0B0B0;">Carregando seus clips...</td></tr>
+                            <tr><td colspan="5" style="text-align: center; color: #B0B0B0;">Carregando seus clips...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -950,12 +951,22 @@
             <div id="view-config" class="view-content">
                 <h2 style="color: #C9A84C; margin-bottom: 20px;">⚙️ Configurações</h2>
                 <p style="color: #B0B0B0; line-height: 1.8;">
-                    <strong>Email:</strong> luiza@clipmind.com<br>
-                    <strong>Plano:</strong> Pro (R$ 397/mês)<br>
-                    <strong>Membro desde:</strong> 15 de junho de 2026<br>
-                    <strong>Clips restantes:</strong> 53 / 100
+                    <strong>Email:</strong> <span id="configEmail">...</span><br>
+                    <strong>Plano:</strong> <span id="configPlan">...</span><br>
+                    <strong>Clips restantes:</strong> <span id="configCreditsLeft">...</span>
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL: QR CODE PARA COMPARTILHAR CLIP -->
+    <div id="qrModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:500; align-items:center; justify-content:center;">
+        <div style="background:#0D1B2A; border:1px solid #C9A84C; border-radius:12px; padding:24px; max-width:300px; text-align:center;">
+            <h3 style="color:#C9A84C; margin-bottom:12px;">📲 Escaneie pra postar</h3>
+            <img id="qrModalImage" src="" alt="QR Code" style="width:200px; height:200px; background:#fff; border-radius:8px; margin-bottom:12px;">
+            <div style="word-break:break-all; font-size:11px; color:#B0B0B0; margin-bottom:12px;" id="qrModalLink"></div>
+            <button class="btn-action" onclick="navigator.clipboard.writeText(document.getElementById('qrModalLink').textContent); alert('Link copiado!')">Copiar Link</button>
+            <button class="btn-action" onclick="document.getElementById('qrModal').style.display='none';">Fechar</button>
         </div>
     </div>
 
@@ -1140,6 +1151,17 @@
                 return localStorage.getItem('clipmind_token');
             },
 
+            showQRModal(url) {
+                if (!url || url === '#') {
+                    alert('Link do clip ainda não disponível.');
+                    return;
+                }
+                const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}`;
+                document.getElementById('qrModalImage').src = qrImageUrl;
+                document.getElementById('qrModalLink').textContent = url;
+                document.getElementById('qrModal').style.display = 'flex';
+            },
+
             // ---------- DADOS REAIS DO USUÁRIO (plano e créditos) ----------
             async loadUserData() {
                 const token = this.getToken();
@@ -1163,8 +1185,23 @@
                         return;
                     }
 
-                    const planLabels = { free: 'Free', starter: 'Starter', pro: 'Pro', agency: 'Agency' };
-                    document.getElementById('planValue').textContent = planLabels[data.plan] || data.plan;
+                    const planLabels = { free: 'Free', starter: 'Starter', pro: 'Pro', elite: 'Elite' };
+                    const planPrices = { free: 'R$ 0', starter: 'R$ 49,90', pro: 'R$ 97,90', elite: 'R$ 197,90' };
+                    const planLabel = planLabels[data.plan] || data.plan;
+                    const planPrice = planPrices[data.plan] || '';
+
+                    document.getElementById('planValue').textContent = planLabel;
+
+                    const configEmail = document.getElementById('configEmail');
+                    const configPlan = document.getElementById('configPlan');
+                    const configCreditsLeft = document.getElementById('configCreditsLeft');
+                    if (configEmail) configEmail.textContent = data.email;
+                    if (configPlan) configPlan.textContent = `${planLabel} (${planPrice}/mês)`;
+                    if (configCreditsLeft) {
+                        configCreditsLeft.textContent = data.clips_limit === null
+                            ? `${data.credits_remaining} (ilimitado)`
+                            : `${data.credits_remaining} / ${data.clips_limit}`;
+                    }
 
                     const fill = document.getElementById('clipsProgressFill');
                     const text = document.getElementById('clipsProgressText');
@@ -1207,7 +1244,7 @@
                     document.getElementById('clipsCountText').textContent = clips.length;
 
                     if (clips.length === 0) {
-                        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #B0B0B0;">Nenhum clip ainda. Cole um link do YouTube acima para gerar o primeiro.</td></tr>';
+                        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #B0B0B0;">Nenhum clip ainda. Cole um link do YouTube acima para gerar o primeiro.</td></tr>';
                         return;
                     }
 
@@ -1216,20 +1253,24 @@
                             ? new Date(clip.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
                             : '-';
                         const duration = clip.duration ? `${clip.duration}s` : '-';
-                        const downloadUrl = clip.storage_url || '#';
+                        const shareUrl = clip.share_url || '#';
+                        const score = (clip.virality_score !== null && clip.virality_score !== undefined)
+                            ? `${clip.virality_score}/10`
+                            : '-';
 
                         return `<tr>
                             <td>${clip.title || 'Clip'}</td>
+                            <td>${score}</td>
                             <td>${duration}</td>
                             <td>${date}</td>
                             <td>
-                                <a class="btn-action" href="${downloadUrl}" target="_blank" rel="noopener" style="text-decoration: none;">Baixar</a>
-                                <button class="btn-action" onclick="navigator.clipboard.writeText('${downloadUrl}'); alert('Link copiado!')">Compartilhar</button>
+                                <a class="btn-action" href="${shareUrl}" target="_blank" rel="noopener" style="text-decoration: none;">Baixar</a>
+                                <button class="btn-action" onclick="appState.showQRModal('${shareUrl}')">Compartilhar</button>
                             </td>
                         </tr>`;
                     }).join('');
                 } catch (err) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #FF6B6B;">Erro ao carregar clips. Tente recarregar a página.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #FF6B6B;">Erro ao carregar clips. Tente recarregar a página.</td></tr>';
                 }
             },
 
