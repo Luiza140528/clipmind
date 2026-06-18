@@ -272,7 +272,9 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
 
     // 2. TRANSCRIÇÃO (WHISPER)
     logger(`Transcribing video...`);
-    const transcript = await transcribeVideo(videoPath);
+    const transcription = await transcribeVideo(videoPath);
+    const transcript = transcription.text;
+    const words = transcription.words || [];
 
     // 3. ANÁLISE (CLAUDE HAIKU) - Identificar momentos
     logger(`Analyzing moments...`);
@@ -283,12 +285,18 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
     const clipIds = [];
     for (const moment of moments) {
       const clipId = `clip_${job_id}_${moment.index}`;
+
+      // Filtrar as palavras que caem dentro deste clip (para legendas animadas)
+      const clipWords = words.filter(w => w.start >= moment.start && w.end <= moment.end)
+        .map(w => ({ ...w, start: w.start - moment.start, end: w.end - moment.start }));
+
       const clipPath = await generateClip(
         videoPath,
         moment.start,
         moment.end,
         moment.reason,
-        applyWatermark
+        applyWatermark,
+        clipWords
       );
 
       // 5. UPLOAD PARA SUPABASE STORAGE
@@ -392,6 +400,8 @@ async function transcribeVideo(videoPath) {
     });
     form.append('model', 'whisper-1');
     form.append('language', 'pt');
+    form.append('response_format', 'verbose_json');
+    form.append('timestamp_granularities[]', 'word');
 
     const response = await axios.post(
       'https://api.openai.com/v1/audio/transcriptions',
@@ -407,7 +417,10 @@ async function transcribeVideo(videoPath) {
     );
 
     logger(`Transcription complete: ${response.data.text.substring(0, 100)}...`);
-    return response.data.text;
+    return {
+      text: response.data.text,
+      words: response.data.words || [],
+    };
   } catch (error) {
     const detail = error.response?.data ? JSON.stringify(error.response.data) : error.message;
     logger(`Transcription error: ${detail}`);
@@ -512,21 +525,46 @@ Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional
 }
 
 // Gerar corte com FFmpeg (OTIMIZADO PARA POLÍTICO - Dark Navy + Gold)
-async function generateClip(videoPath, startSeconds, endSeconds, reason, applyWatermark = false) {
+async function generateClip(videoPath, startSeconds, endSeconds, reason, applyWatermark = false, words = []) {
   const clipPath = `/tmp/clip_${Date.now()}.mp4`;
   const duration = endSeconds - startSeconds;
   let watermarkPath = null;
 
   try {
-    // Criar SRT file com legenda estilizada
+    // Gerar SRT com legendas palavra por palavra (animadas) ou legenda simples como fallback
     const srtPath = `/tmp/subtitle_${Date.now()}.srt`;
-    const srtContent = `1
-00:00:00,000 --> 00:00:${Math.ceil(duration)},000
-${reason}`;
+    let srtContent = '';
+
+    if (words && words.length > 0) {
+      // Agrupar palavras em blocos de 3-4 palavras pra legenda não ficar longa
+      const WORDS_PER_BLOCK = 4;
+      for (let i = 0; i < words.length; i += WORDS_PER_BLOCK) {
+        const block = words.slice(i, i + WORDS_PER_BLOCK);
+        const blockStart = block[0].start;
+        const blockEnd = block[block.length - 1].end;
+        const text = block.map(w => w.word).join(' ').toUpperCase();
+
+        const toSrtTime = (s) => {
+          const h = Math.floor(s / 3600);
+          const m = Math.floor((s % 3600) / 60);
+          const sec = Math.floor(s % 60);
+          const ms = Math.round((s % 1) * 1000);
+          return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+        };
+
+        srtContent += `${Math.floor(i / WORDS_PER_BLOCK) + 1}\n${toSrtTime(blockStart)} --> ${toSrtTime(blockEnd)}\n${text}\n\n`;
+      }
+    } else {
+      // Fallback: legenda simples com o motivo do corte
+      srtContent = `1\n00:00:00,000 --> 00:00:${Math.ceil(duration)},000\n${reason}\n\n`;
+    }
+
     fs.writeFileSync(srtPath, srtContent);
 
     const reframeFilter = `scale=-2:1920,crop=1080:1920`;
     const subtitleFilter = `subtitles='${srtPath}':force_style='FontName=Arial,FontSize=22,PrimaryColour=&HC9A84C&,SecondaryColour=&H0D1B2A&,OutlineColour=&H000000&,Outline=3,Shadow=2,Spacing=1,Alignment=2'`;
+    // Remoção de silêncios: remove pausas > 0.5s com áudio abaixo de -35dB
+    const silenceFilter = `silenceremove=stop_periods=-1:stop_duration=0.5:stop_threshold=-35dB`;
     const baseFilter = `${reframeFilter},${subtitleFilter}`;
 
     let ffmpegCommand;
@@ -548,17 +586,18 @@ ${reason}`;
     }
 
     if (watermarkPath && fs.existsSync(watermarkPath)) {
-      // Corte + reformatação vertical + legenda + marca d'água no canto inferior direito
+      // Corte + remoção de silêncios + reformatação vertical + legenda + marca d'água
       ffmpegCommand = `ffmpeg -i "${videoPath}" -ss ${startSeconds} -to ${endSeconds} -i "${watermarkPath}" \
-        -filter_complex "[0:v]${baseFilter}[base];[base][1:v]overlay=W-w-20:H-h-20[outv]" \
-        -map "[outv]" -map 0:a? \
+        -filter_complex "[0:a]${silenceFilter}[aout];[0:v]${baseFilter}[base];[base][1:v]overlay=W-w-20:H-h-20[outv]" \
+        -map "[outv]" -map "[aout]" \
         -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
         "${clipPath}" -y`;
     } else {
-      // FFmpeg command: cortar + reformatar vertical + legenda estilizada, sem marca d'água (planos pagos)
+      // FFmpeg command: cortar + remover silêncios + reformatar vertical + legenda (planos pagos)
       ffmpegCommand = `ffmpeg -i "${videoPath}" \
         -ss ${startSeconds} -to ${endSeconds} \
-        -vf "${baseFilter}" \
+        -filter_complex "[0:a]${silenceFilter}[aout];[0:v]${baseFilter}[vout]" \
+        -map "[vout]" -map "[aout]" \
         -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
         "${clipPath}" -y`;
     }
