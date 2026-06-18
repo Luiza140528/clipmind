@@ -369,31 +369,37 @@ async function downloadVideo(url, job_id) {
 // Transcrever com Whisper
 async function transcribeVideo(videoPath) {
   const audioPath = `${videoPath}_audio.mp3`;
+  let filePath = videoPath;
 
   try {
-    // Extrair só o áudio do vídeo (menor e aceito pelo Whisper sem problemas)
+    // Tenta extrair só o áudio (menor, mais aceito pelo Whisper)
     await execAsync(`ffmpeg -i "${videoPath}" -vn -acodec libmp3lame -q:a 4 "${audioPath}" -y`, { timeout: 120000 });
+    if (fs.existsSync(audioPath)) {
+      filePath = audioPath;
+      logger(`Audio extracted: ${audioPath}`);
+    }
   } catch (err) {
-    logger(`Audio extraction failed: ${err.message} — tentando enviar vídeo direto`);
+    logger(`Audio extraction failed, using original video: ${err.message}`);
+    filePath = videoPath;
   }
 
-  const filePath = fs.existsSync(audioPath) ? audioPath : videoPath;
-  const fileName = filePath.endsWith('.mp3') ? 'audio.mp3' : 'audio.mp4';
-
   try {
-    const formData = new FormData();
-    const fileStream = fs.createReadStream(filePath);
-    formData.append('file', fileStream, { filename: fileName });
-    formData.append('model', 'whisper-1');
-    formData.append('language', 'pt');
+    const FormDataLib = require('form-data');
+    const form = new FormDataLib();
+    form.append('file', fs.createReadStream(filePath), {
+      filename: filePath.endsWith('.mp3') ? 'audio.mp3' : 'audio.mp4',
+      contentType: filePath.endsWith('.mp3') ? 'audio/mpeg' : 'video/mp4',
+    });
+    form.append('model', 'whisper-1');
+    form.append('language', 'pt');
 
     const response = await axios.post(
       'https://api.openai.com/v1/audio/transcriptions',
-      formData,
+      form,
       {
         headers: {
           Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-          ...formData.getHeaders(),
+          ...form.getHeaders(),
         },
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
@@ -403,10 +409,10 @@ async function transcribeVideo(videoPath) {
     logger(`Transcription complete: ${response.data.text.substring(0, 100)}...`);
     return response.data.text;
   } catch (error) {
-    logger(`Transcription error: ${error.response?.data ? JSON.stringify(error.response.data) : error.message}`);
+    const detail = error.response?.data ? JSON.stringify(error.response.data) : error.message;
+    logger(`Transcription error: ${detail}`);
     throw new Error('Failed to transcribe video');
   } finally {
-    // Limpar o arquivo de áudio temporário
     if (fs.existsSync(audioPath)) {
       try { fs.unlinkSync(audioPath); } catch (_) {}
     }
