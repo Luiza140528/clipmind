@@ -5,6 +5,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const multer = require('multer');
 const { createClient } = require('@supabase/supabase-js');
 const axios = require('axios');
 const fs = require('fs');
@@ -191,14 +192,80 @@ app.post('/api/process', authenticateUser, async (req, res) => {
   }
 });
 
+// Upload direto de vídeo (ex: discurso gravado no celular, sem precisar do YouTube)
+const upload = multer({
+  dest: '/tmp/uploads/',
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500MB
+});
+
+app.post('/api/process/upload', authenticateUser, upload.single('video'), async (req, res) => {
+  try {
+    const user_id = req.user.id;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Video file required' });
+    }
+
+    // Verificar créditos
+    const { data: userData } = await supabase
+      .from('users')
+      .select('credits, plan')
+      .eq('id', user_id)
+      .single();
+
+    if (!userData || userData.credits <= 0) {
+      fs.unlink(req.file.path, () => {});
+      return res.status(402).json({ error: 'No credits available' });
+    }
+
+    const job_id = `job_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const ext = path.extname(req.file.originalname) || '.mp4';
+    const videoPath = `/tmp/${job_id}${ext}`;
+    fs.renameSync(req.file.path, videoPath);
+
+    const { error: jobError } = await supabase
+      .from('processing_jobs')
+      .insert({
+        id: job_id,
+        user_id,
+        youtube_url: `upload:${req.file.originalname}`,
+        status: 'pending',
+      });
+
+    if (jobError) {
+      logger(`Job creation error: ${jobError.message}`);
+      return res.status(500).json({ error: 'Failed to create job' });
+    }
+
+    logger(`Upload job created: ${job_id} for user ${user_id}`);
+
+    processVideoAsync(job_id, user_id, null, videoPath);
+
+    res.json({
+      job_id,
+      status: 'processing',
+      message: 'Seu vídeo está sendo processado. Confira em alguns minutos.',
+    });
+  } catch (error) {
+    logger(`Upload process error: ${error.message}`);
+    res.status(500).json({ error: 'Processing failed' });
+  }
+});
+
 // Função assíncrona de processamento (roda em background)
-async function processVideoAsync(job_id, user_id, youtube_url) {
+async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath = null) {
   try {
     logger(`Starting processing for job ${job_id}`);
 
-    // 1. DOWNLOAD DO VÍDEO
-    logger(`Downloading video: ${youtube_url}`);
-    const videoPath = await downloadVideo(youtube_url, job_id);
+    // 1. OBTER O VÍDEO: baixar do YouTube, ou usar o arquivo já enviado do celular
+    let videoPath;
+    if (existingVideoPath) {
+      videoPath = existingVideoPath;
+      logger(`Using uploaded video: ${videoPath}`);
+    } else {
+      logger(`Downloading video: ${youtube_url}`);
+      videoPath = await downloadVideo(youtube_url, job_id);
+    }
 
     // 2. TRANSCRIÇÃO (WHISPER)
     logger(`Transcribing video...`);
