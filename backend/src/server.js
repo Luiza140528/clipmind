@@ -1,4 +1,4 @@
-// server.js - ClipMind Backend (MVP)
+// server.js - InovaShot Backend (MVP)
 // Stack: Express + Supabase + Whisper + Claude Haiku + FFmpeg
 
 require('dotenv').config();
@@ -264,7 +264,7 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
   try {
     logger(`Starting processing for job ${job_id}`);
 
-    // Marca d'água "ClipMind" só no plano Free — é o incentivo pro upgrade
+    // Marca d'água "InovaShot" só no plano Free — é o incentivo pro upgrade
     const applyWatermark = plan === 'free';
 
     // 1. OBTER O VÍDEO: baixar do YouTube, ou usar o arquivo já enviado do celular
@@ -601,11 +601,11 @@ async function generateClip(videoPath, startSeconds, endSeconds, reason, applyWa
     let ffmpegCommand;
 
     if (applyWatermark) {
-      // Criar imagem de watermark ClipMind (texto simples com logo) - só plano Free
+      // Criar imagem de watermark InovaShot (texto simples com logo) - só plano Free
       watermarkPath = `/tmp/watermark_${Date.now()}.png`;
       const watermarkCommand = `convert -size 200x40 xc:transparent \
         -font Arial -pointsize 14 -fill "#C9A84C" \
-        -gravity Center -annotate +0+0 "ClipMind" \
+        -gravity Center -annotate +0+0 "InovaShot" \
         "${watermarkPath}"`;
 
       try {
@@ -910,7 +910,7 @@ app.get('/health', (req, res) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
-  logger(`ClipMind server running on port ${PORT}`);
+  logger(`InovaShot server running on port ${PORT}`);
   logger(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
