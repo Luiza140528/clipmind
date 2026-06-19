@@ -3,24 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClipMind - Plataforma de Cortes Virais com IA</title>
+    <title>InovaShot — High-Retention Short-Form Video com IA</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
+
+        :root {
+            --bg: #0e0820;
+            --bg2: #16103a;
+            --card: #1e1650;
+            --card2: #2d2458;
+            --neon1: #f472b6;
+            --neon2: #a855f7;
+            --neon3: #38bdf8;
+            --text: #ffffff;
+            --muted: #a0a0c0;
+            --border: #3b2f6e;
+        }
+
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0D1B2A 0%, #1a2d3a 100%);
-            color: #FFFFFF;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated gradient text */
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; text-shadow: 0 0 20px #f472b6, 0 0 40px #a855f7; }
+            50%       { opacity: 0.85; text-shadow: 0 0 40px #38bdf8, 0 0 80px #a855f7; }
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f472b6, #a855f7, #38bdf8, #f472b6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, pulse 2s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        /* Neon glow button */
+        .btn-neon {
+            background: linear-gradient(135deg, #f472b6, #a855f7, #38bdf8);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 36px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+
+        .btn-neon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.8), 0 0 80px rgba(244, 114, 182, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #a855f7;
+            border: 2px solid #a855f7;
+            border-radius: 10px;
+            padding: 14px 36px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: #f472b6;
+            color: #f472b6;
+            box-shadow: 0 0 20px rgba(244, 114, 182, 0.3);
         }
 
         /* Header */
         header {
-            padding: 20px 40px;
-            border-bottom: 1px solid #1a2d3a;
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 100;
-            background: rgba(13, 27, 42, 0.95);
+            background: rgba(14, 8, 32, 0.95);
+            backdrop-filter: blur(10px);
         }
 
         nav {
@@ -32,555 +111,534 @@
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: #C9A84C;
+            font-size: 26px;
+            font-weight: 900;
             text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            letter-spacing: -0.5px;
         }
 
         nav ul {
             display: flex;
             list-style: none;
             gap: 30px;
+            align-items: center;
         }
 
         nav a {
-            color: #B0B0B0;
+            color: var(--muted);
             text-decoration: none;
             transition: color 0.3s;
             font-size: 14px;
         }
 
-        nav a:hover {
-            color: #C9A84C;
-        }
+        nav a:hover { color: #f472b6; }
 
-        /* Hero Section */
+        /* Hero */
         .hero {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 80px 40px;
+            padding: 100px 40px 80px;
             text-align: center;
+            position: relative;
         }
 
-        .hero-icon {
-            font-size: 80px;
-            margin-bottom: 30px;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
             display: inline-block;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            background: rgba(168, 85, 247, 0.15);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            color: #c084fc;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            letter-spacing: 0.5px;
         }
 
         h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-            color: #FFFFFF;
-            line-height: 1.2;
-        }
-
-        .tagline {
-            font-size: 18px;
-            color: #C9A84C;
+            font-size: 56px;
+            font-weight: 900;
+            line-height: 1.1;
             margin-bottom: 20px;
-            font-weight: 500;
+            letter-spacing: -1px;
         }
 
-        .description {
-            font-size: 16px;
-            color: #B0B0B0;
-            max-width: 600px;
+        .hero-sub {
+            font-size: 18px;
+            color: var(--muted);
+            max-width: 580px;
             margin: 0 auto 40px;
             line-height: 1.8;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 60px;
+            margin-bottom: 70px;
         }
 
-        .btn {
-            padding: 14px 32px;
-            font-size: 15px;
-            font-weight: 600;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: #C9A84C;
-            color: #0D1B2A;
-            box-shadow: 0 4px 15px rgba(201, 168, 76, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: #E0C158;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(201, 168, 76, 0.5);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: #C9A84C;
-            border: 2px solid #C9A84C;
-        }
-
-        .btn-secondary:hover {
-            background: #C9A84C;
-            color: #0D1B2A;
-        }
-
-        /* Trust Signals */
-        .trust-section {
-            max-width: 1200px;
-            margin: 0 auto;
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            flex-wrap: wrap;
             padding: 40px;
-            background: rgba(26, 45, 58, 0.3);
-            border-radius: 15px;
-            margin-bottom: 60px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            max-width: 900px;
+            margin: 0 auto 80px;
         }
 
-        .trust-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
+        .stat-item { text-align: center; }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 900;
         }
 
-        .trust-item {
-            text-align: center;
+        .stat-label {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
         }
 
-        .trust-icon {
-            font-size: 40px;
-            margin-bottom: 15px;
-        }
-
-        .trust-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #FFFFFF;
-            margin-bottom: 10px;
-        }
-
-        .trust-text {
-            font-size: 14px;
-            color: #B0B0B0;
-        }
-
-        /* Pricing Section */
-        .pricing-section {
+        /* Features */
+        .features {
             max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px;
-            margin-bottom: 60px;
+            margin: 0 auto 80px;
+            padding: 0 40px;
         }
 
         .section-title {
-            font-size: 36px;
+            font-size: 38px;
+            font-weight: 800;
             text-align: center;
             margin-bottom: 50px;
-            color: #FFFFFF;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: #a855f7;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        /* Pricing */
+        .pricing {
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 40px;
         }
 
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
         }
 
         .pricing-card {
-            background: rgba(13, 27, 42, 0.95);
-            border: 2px solid #1a2d3a;
-            border-radius: 12px;
-            padding: 30px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
             text-align: center;
             transition: all 0.3s;
+            position: relative;
         }
 
         .pricing-card:hover {
-            border-color: #C9A84C;
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(201, 168, 76, 0.2);
+            border-color: #a855f7;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 40px rgba(168, 85, 247, 0.2);
         }
 
         .pricing-card.featured {
-            border-color: #C9A84C;
-            transform: scale(1.05);
+            border-color: #a855f7;
+            background: linear-gradient(180deg, rgba(168,85,247,0.1) 0%, var(--card) 100%);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.2);
+        }
+
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #f472b6, #a855f7);
+            color: #fff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
         }
 
         .plan-name {
-            font-size: 20px;
-            font-weight: 600;
-            color: #C9A84C;
-            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .plan-price {
-            font-size: 36px;
-            font-weight: bold;
-            color: #FFFFFF;
-            margin-bottom: 10px;
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 6px;
         }
 
-        .plan-price small {
-            font-size: 14px;
-            color: #B0B0B0;
+        .plan-period {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px;
         }
 
         .plan-features {
             list-style: none;
-            margin: 25px 0;
             text-align: left;
+            margin-bottom: 28px;
         }
 
         .plan-features li {
-            padding: 10px 0;
-            color: #B0B0B0;
-            border-bottom: 1px solid #1a2d3a;
+            padding: 9px 0;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
             font-size: 14px;
         }
 
-        .plan-features li:before {
-            content: "✓ ";
-            color: #C9A84C;
-            font-weight: bold;
-            margin-right: 8px;
+        .plan-features li::before {
+            content: "⚡ ";
+            color: #a855f7;
         }
 
         .plan-cta {
             width: 100%;
-            padding: 12px;
-            margin-top: 20px;
+            padding: 13px;
             background: transparent;
-            color: #C9A84C;
-            border: 2px solid #C9A84C;
-            border-radius: 6px;
+            color: #a855f7;
+            border: 2px solid #a855f7;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
+            font-size: 15px;
             transition: all 0.3s;
         }
 
-        .plan-cta:hover {
-            background: #C9A84C;
-            color: #0D1B2A;
+        .plan-cta:hover, .pricing-card.featured .plan-cta {
+            background: linear-gradient(135deg, #f472b6, #a855f7);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
         }
 
-        /* FAQ Section */
-        .faq-section {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px;
-            margin-bottom: 60px;
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #a855f7, transparent);
+            margin: 60px auto;
+            max-width: 800px;
         }
 
-        .faq-container {
-            max-width: 700px;
-            margin: 0 auto;
+        /* FAQ */
+        .faq {
+            max-width: 800px;
+            margin: 0 auto 80px;
+            padding: 0 40px;
         }
 
         .faq-item {
-            background: rgba(13, 27, 42, 0.95);
-            border: 1px solid #1a2d3a;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 12px;
             overflow: hidden;
+            transition: border-color 0.3s;
         }
+
+        .faq-item:hover { border-color: #a855f7; }
 
         .faq-question {
             padding: 20px;
             cursor: pointer;
             font-weight: 600;
-            color: #FFFFFF;
+            font-size: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.3s;
         }
 
-        .faq-question:hover {
-            background: rgba(201, 168, 76, 0.1);
-        }
-
-        .faq-toggle {
-            font-size: 20px;
-            transition: transform 0.3s;
-        }
-
-        .faq-item.active .faq-toggle {
-            transform: rotate(180deg);
-        }
+        .faq-toggle { color: #a855f7; transition: transform 0.3s; }
+        .faq-item.active .faq-toggle { transform: rotate(180deg); }
 
         .faq-answer {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
-            padding: 0 20px;
-            color: #B0B0B0;
+            color: var(--muted);
             font-size: 14px;
             line-height: 1.8;
+            padding: 0 20px;
         }
 
         .faq-item.active .faq-answer {
-            max-height: 500px;
-            padding: 0 20px 20px 20px;
+            max-height: 300px;
+            padding: 0 20px 20px;
         }
 
         /* Footer */
         footer {
-            background: #000000;
+            background: #070412;
+            border-top: 1px solid var(--border);
             padding: 40px;
             text-align: center;
-            border-top: 1px solid #1a2d3a;
-            margin-top: 60px;
         }
 
-        footer p {
-            color: #808080;
-            font-size: 14px;
-            margin: 10px 0;
-        }
+        footer p { color: var(--muted); font-size: 14px; margin: 8px 0; }
+        footer a { color: #a855f7; text-decoration: none; }
+        footer a:hover { color: #f472b6; }
 
-        footer a {
-            color: #C9A84C;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        /* Responsivo */
+        /* Mobile */
         @media (max-width: 768px) {
             header { padding: 15px 20px; }
-            nav { flex-direction: column; gap: 20px; }
-            nav ul { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: 12px 20px; }
-            h1 { font-size: 32px; }
-            .hero { padding: 40px 20px; }
-            .cta-buttons { flex-direction: column; }
-            .btn { width: 100%; }
-            .pricing-card.featured { transform: scale(1); }
+            nav ul { display: none; }
+            h1 { font-size: 34px; }
+            .hero { padding: 60px 20px 40px; }
+            .stats { gap: 30px; padding: 24px; }
+            .stat-number { font-size: 28px; }
+            .features, .pricing, .faq { padding: 0 20px; }
             .section-title { font-size: 28px; }
-            .trust-grid { grid-template-columns: 1fr; }
+            .cta-buttons { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <nav>
-            <a href="#" class="logo">🎬 ClipMind</a>
-            <ul>
-                <li><a href="#trust">Por Que ClipMind</a></li>
-                <li><a href="#pricing">Planos</a></li>
-                <li><a href="#faq">FAQ</a></li>
-                <li><a href="https://github.com/Luiza140528/clipmind" target="_blank">GitHub</a></li>
+
+<header>
+    <nav>
+        <a href="#" class="logo"><span class="gradient-text">⚡ InovaShot</span></a>
+        <ul>
+            <li><a href="#features">Funcionalidades</a></li>
+            <li><a href="#pricing">Planos</a></li>
+            <li><a href="#faq">FAQ</a></li>
+            <li><a href="app.html#login" class="btn-neon" style="padding: 8px 20px; font-size: 14px;">Entrar</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-badge">⚡ IA de alta retenção para criadores brasileiros</div>
+    <h1>Vídeos curtos que<br><span class="gradient-text">prendem e convertem</span></h1>
+    <p class="hero-sub">Transforme qualquer vídeo longo em clips virais para TikTok, Reels e Shorts. IA identifica os momentos, corta, legenda e entrega pronto.</p>
+    <p style="font-size: 20px; font-weight: 800; margin-bottom: 40px; letter-spacing: -0.5px;"><span class="gradient-text">"Não é sorte, é o corte certo."</span></p>
+    <div class="cta-buttons">
+        <a href="app.html#login" class="btn-neon">🚀 Começar Grátis</a>
+        <a href="#pricing" class="btn-outline">Ver Planos</a>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number gradient-text">5min</div>
+            <div class="stat-label">Tempo médio de processamento</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text">9:16</div>
+            <div class="stat-label">Formato vertical automático</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text">IA</div>
+            <div class="stat-label">Whisper + Claude Haiku</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number gradient-text">100%</div>
+            <div class="stat-label">Automatizado</div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="features" id="features">
+    <h2 class="section-title">Tudo que você precisa para <span class="gradient-text">viralizar</span></h2>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <div class="feature-title">Momentos Virais com IA</div>
+            <div class="feature-text">Claude Haiku analisa o conteúdo e identifica automaticamente os momentos de maior potencial de engajamento.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📱</div>
+            <div class="feature-title">Formato Vertical 9:16</div>
+            <div class="feature-text">Conversão automática para o formato ideal do TikTok, Reels e Shorts. Sem precisar editar nada manualmente.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <div class="feature-title">Legendas Animadas</div>
+            <div class="feature-text">Legendas palavra por palavra com timestamps reais do Whisper. O texto aparece sincronizado com a fala.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✂️</div>
+            <div class="feature-title">Remove Silêncios</div>
+            <div class="feature-text">Pausas e hesitações são removidas automaticamente. O clip fica mais dinâmico e com maior retenção.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🔗</div>
+            <div class="feature-title">Link Curto + QR Code</div>
+            <div class="feature-text">Cada clip gera um link curto único e um QR Code para compartilhar nas redes com um clique.</div>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <div class="feature-title">Nota de Viralidade</div>
+            <div class="feature-text">Cada clip recebe uma nota de 0 a 10 indicando o potencial viral, calculada pela IA com base no conteúdo.</div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="pricing" id="pricing">
+    <h2 class="section-title">Planos <span class="gradient-text">simples e diretos</span></h2>
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <div class="plan-name">Free</div>
+            <div class="plan-price">R$ 0</div>
+            <div class="plan-period">/mês</div>
+            <ul class="plan-features">
+                <li>3 clips/mês</li>
+                <li>Vídeos até 30 min</li>
+                <li>Com marca d'água</li>
+                <li>Suporte por email</li>
             </ul>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-icon">🎬</div>
-        <h1>ClipMind — Plataforma de Cortes Virais com IA</h1>
-        <p class="tagline">A mente inteligente por trás do seu viral</p>
-        <p class="description">
-            Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. 
-            Otimizado para políticos. Powered by IA.
-        </p>
-        <div class="cta-buttons">
-            <a href="app.html#login" class="btn btn-primary">🚀 Começar Agora</a>
-            <a href="https://github.com/Luiza140528/clipmind" target="_blank" class="btn btn-secondary">📚 GitHub</a>
+            <button class="plan-cta" onclick="window.location='app.html#login'">Começar Grátis</button>
         </div>
-    </section>
 
-    <!-- Trust Signals -->
-    <section class="trust-section" id="trust">
-        <div class="trust-grid">
-            <div class="trust-item">
-                <div class="trust-icon">✅</div>
-                <div class="trust-title">100% Seguro</div>
-                <div class="trust-text">Dados criptografados com TLS 1.3</div>
-            </div>
-            <div class="trust-item">
-                <div class="trust-icon">🔒</div>
-                <div class="trust-title">Privacidade Garantida</div>
-                <div class="trust-text">RLS ativo no Supabase</div>
-            </div>
-            <div class="trust-item">
-                <div class="trust-icon">⚡</div>
-                <div class="trust-title">Processamento Rápido</div>
-                <div class="trust-text">Clips gerados em 5 minutos</div>
-            </div>
-            <div class="trust-item">
-                <div class="trust-icon">🤖</div>
-                <div class="trust-title">IA Inteligente</div>
-                <div class="trust-text">Claude Haiku + Whisper</div>
-            </div>
+        <div class="pricing-card">
+            <div class="plan-name">Starter</div>
+            <div class="plan-price gradient-text">R$ 49,90</div>
+            <div class="plan-period">/mês</div>
+            <ul class="plan-features">
+                <li>30 clips/mês</li>
+                <li>Vídeos até 1 hora</li>
+                <li>Sem marca d'água</li>
+                <li>Suporte prioritário</li>
+            </ul>
+            <button class="plan-cta" onclick="window.location='app.html#login'">Escolher Starter</button>
         </div>
-    </section>
 
-    <!-- Pricing Section -->
-    <section class="pricing-section" id="pricing">
-        <h2 class="section-title">💰 Planos Simples e Transparentes</h2>
-        <div class="pricing-grid">
-            <!-- Free -->
-            <div class="pricing-card">
-                <div class="plan-name">Free</div>
-                <div class="plan-price">R$ <strong>0</strong><small>/mês</small></div>
-                <ul class="plan-features">
-                    <li>3 clips/mês</li>
-                    <li>Até 30 minutos de vídeo</li>
-                    <li>Com marca d'água ClipMind</li>
-                    <li>Suporte por email</li>
-                </ul>
-                <button class="plan-cta">Começar Grátis</button>
-            </div>
-
-            <!-- Starter -->
-            <div class="pricing-card">
-                <div class="plan-name">Starter</div>
-                <div class="plan-price">R$ <strong>49,90</strong><small>/mês</small></div>
-                <ul class="plan-features">
-                    <li>30 clips/mês</li>
-                    <li>Vídeos até 1 hora</li>
-                    <li><strong>Sem marca d'água</strong></li>
-                    <li>Suporte prioritário</li>
-                    <li>12% comissão de sucesso</li>
-                </ul>
-                <button class="plan-cta">Escolher Starter</button>
-            </div>
-
-            <!-- Pro (Featured) -->
-            <div class="pricing-card featured">
-                <div class="plan-name">Pro ⭐</div>
-                <div class="plan-price">R$ <strong>97,90</strong><small>/mês</small></div>
-                <ul class="plan-features">
-                    <li>100 clips/mês</li>
-                    <li>Vídeos ilimitados</li>
-                    <li>Suporte 24/7</li>
-                    <li>10% comissão de sucesso</li>
-                    <li>Analytics avançado</li>
-                </ul>
-                <button class="plan-cta">Escolher Pro</button>
-            </div>
-
-            <!-- Elite -->
-            <div class="pricing-card">
-                <div class="plan-name">Elite</div>
-                <div class="plan-price">R$ <strong>197,90</strong><small>/mês</small></div>
-                <ul class="plan-features">
-                    <li>Clips ilimitados</li>
-                    <li>Prioridade máxima</li>
-                    <li>Dedicated manager</li>
-                    <li>8% comissão de sucesso</li>
-                    <li>API acesso completo</li>
-                </ul>
-                <button class="plan-cta">Escolher Elite</button>
-            </div>
+        <div class="pricing-card featured">
+            <div class="featured-badge">⭐ MAIS POPULAR</div>
+            <div class="plan-name">Pro</div>
+            <div class="plan-price gradient-text">R$ 97,90</div>
+            <div class="plan-period">/mês</div>
+            <ul class="plan-features">
+                <li>100 clips/mês</li>
+                <li>Vídeos ilimitados</li>
+                <li>Suporte 24/7</li>
+                <li>Analytics avançado</li>
+            </ul>
+            <button class="plan-cta" onclick="window.location='app.html#login'">Escolher Pro</button>
         </div>
-        <p style="text-align: center; color: #B0B0B0; margin-top: 30px; font-size: 14px;">
-            Sem contrato de longa duração | Cancele quando quiser
-        </p>
-    </section>
 
-    <!-- FAQ Section -->
-    <section class="faq-section" id="faq">
-        <h2 class="section-title">❓ Perguntas Frequentes</h2>
-        <div class="faq-container">
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Como funciona o ClipMind?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Você faz upload de um vídeo (ou compartilha um link do YouTube), nosso sistema analisa usando IA, identifica os momentos mais virais e gera clips automáticos prontos para TikTok, Reels e Shorts.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Qual é o tempo de processamento?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Em média, um vídeo de 1 hora é processado em 5 minutos. O tempo pode variar dependendo do tamanho e duração do vídeo.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Preciso de conhecimento técnico?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Não! O ClipMind foi feito para ser intuitivo. Se você consegue fazer upload de um vídeo, consegue usar o ClipMind.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Posso cancelar a qualquer momento?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Sim! Sem contrato de longa duração. Você pode cancelar seu plano a qualquer momento sem penalidades.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Meus vídeos estão seguros?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Absolutamente! Todos os dados são criptografados com TLS 1.3 e armazenados de forma segura no Supabase. Você tem controle total sobre seus clips.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">
-                    <span>Como funciona a comissão de sucesso?</span>
-                    <span class="faq-toggle">▼</span>
-                </div>
-                <div class="faq-answer">
-                    Além da mensalidade, você paga uma pequena comissão apenas quando seus clips geram engajamento ou vendas. É uma forma de compartilhar o sucesso com você.
-                </div>
-            </div>
+        <div class="pricing-card">
+            <div class="plan-name">Elite</div>
+            <div class="plan-price gradient-text">R$ 197,90</div>
+            <div class="plan-period">/mês</div>
+            <ul class="plan-features">
+                <li>Clips ilimitados</li>
+                <li>Prioridade máxima</li>
+                <li>Manager dedicado</li>
+                <li>Acesso à API</li>
+            </ul>
+            <button class="plan-cta" onclick="window.location='app.html#login'">Escolher Elite</button>
         </div>
-    </section>
+    </div>
+    <p style="text-align:center; color: var(--muted); margin-top: 24px; font-size: 14px;">Sem contrato longo · Cancele quando quiser</p>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <p>ClipMind © 2026 — Transforme vídeos em estratégia</p>
-        <p>Desenvolvido por <strong>Luiza Costa Soares</strong> | <a href="https://instagram.com/lcosta.real" target="_blank">A Seta do Interior 🏹</a></p>
-        <p style="margin-top: 20px; font-size: 12px;">
-            <a href="#">Política de Privacidade</a> | 
-            <a href="#">Termos de Serviço</a> | 
-            <a href="mailto:contato@clipmind.com">Contato</a>
-        </p>
-    </footer>
+<div class="divider"></div>
 
-    <script>
-        // FAQ Toggle
-        document.querySelectorAll('.faq-question').forEach(question => {
-            question.addEventListener('click', () => {
-                const item = question.parentElement;
-                item.classList.toggle('active');
-            });
-        });
-    </script>
+<section class="faq" id="faq">
+    <h2 class="section-title">Perguntas <span class="gradient-text">frequentes</span></h2>
+    <div class="faq-item">
+        <div class="faq-question"><span>Como o InovaShot funciona?</span><span class="faq-toggle">▼</span></div>
+        <div class="faq-answer">Você faz upload de um vídeo ou compartilha um link do YouTube. A IA analisa, identifica os melhores momentos, corta em formato 9:16, adiciona legendas animadas e entrega os clips prontos.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question"><span>Quanto tempo leva o processamento?</span><span class="faq-toggle">▼</span></div>
+        <div class="faq-answer">Em média 5 minutos para vídeos de até 1 hora. O tempo varia com o tamanho do arquivo e a demanda do servidor.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question"><span>Preciso saber editar vídeo?</span><span class="faq-toggle">▼</span></div>
+        <div class="faq-answer">Não! O InovaShot foi feito pra ser usado por qualquer pessoa. Se você consegue fazer upload de um arquivo, consegue usar a plataforma.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question"><span>Meus vídeos ficam seguros?</span><span class="faq-toggle">▼</span></div>
+        <div class="faq-answer">Sim. Todos os dados são criptografados e armazenados com segurança. Você tem controle total sobre seus clips e pode excluí-los quando quiser.</div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question"><span>Posso cancelar quando quiser?</span><span class="faq-toggle">▼</span></div>
+        <div class="faq-answer">Sim, sem multa e sem burocracia. Cancele a qualquer momento direto pelo painel.</div>
+    </div>
+</section>
+
+<footer>
+    <p><span class="gradient-text" style="font-size: 20px; font-weight: 800;">⚡ InovaShot.pro</span></p>
+    <p style="margin-top: 10px;">High-Retention Short-Form Video com IA</p>
+    <p style="margin-top: 16px;">Desenvolvido por <strong>Luiza Costa Soares</strong> | <a href="https://instagram.com/lcosta.real" target="_blank">@lcosta.real</a></p>
+    <p style="margin-top: 16px; font-size: 12px;">
+        <a href="#">Política de Privacidade</a> · 
+        <a href="#">Termos de Serviço</a> · 
+        <a href="mailto:contato@inovashot.pro">contato@inovashot.pro</a>
+    </p>
+    <p style="margin-top: 12px; font-size: 12px; color: #4a4060;">© 2026 InovaShot.pro — Todos os direitos reservados</p>
+</footer>
+
+<script>
+    document.querySelectorAll('.faq-question').forEach(q => {
+        q.addEventListener('click', () => q.parentElement.classList.toggle('active'));
+    });
+</script>
 </body>
 </html>
