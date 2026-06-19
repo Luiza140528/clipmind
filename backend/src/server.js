@@ -139,8 +139,9 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.post('/api/process', authenticateUser, async (req, res) => {
   try {
-    const { youtube_url } = req.body;
+    const { youtube_url, objetivo, tom, destino } = req.body;
     const user_id = req.user.id;
+    const videoConfig = { objetivo, tom, destino };
 
     if (!youtube_url) {
       return res.status(400).json({ error: 'YouTube URL required' });
@@ -179,7 +180,7 @@ app.post('/api/process', authenticateUser, async (req, res) => {
     logger(`Job created: ${job_id} for user ${user_id}`);
 
     // Processar de forma assíncrona (não bloqueia a resposta)
-    processVideoAsync(job_id, user_id, youtube_url, null, userData.plan);
+    processVideoAsync(job_id, user_id, youtube_url, null, userData.plan, videoConfig);
 
     res.json({
       job_id,
@@ -239,7 +240,13 @@ app.post('/api/process/upload', authenticateUser, upload.single('video'), async 
 
     logger(`Upload job created: ${job_id} for user ${user_id}`);
 
-    processVideoAsync(job_id, user_id, null, videoPath, userData.plan);
+    const videoConfig = {
+      objetivo: req.body.objetivo || 'viralizar',
+      tom: req.body.tom || 'dinamico',
+      destino: req.body.destino || 'todos',
+    };
+
+    processVideoAsync(job_id, user_id, null, videoPath, userData.plan, videoConfig);
 
     res.json({
       job_id,
@@ -253,7 +260,7 @@ app.post('/api/process/upload', authenticateUser, upload.single('video'), async 
 });
 
 // Função assíncrona de processamento (roda em background)
-async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath = null, plan = 'free') {
+async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath = null, plan = 'free', config = {}) {
   try {
     logger(`Starting processing for job ${job_id}`);
 
@@ -278,7 +285,7 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
 
     // 3. ANÁLISE (CLAUDE HAIKU) - Identificar momentos
     logger(`Analyzing moments...`);
-    const moments = await analyzeWithClaude(transcript);
+    const moments = await analyzeWithClaude(transcript, config);
 
     // 4. GERAR CORTES (FFMPEG)
     logger(`Generating clips...`);
@@ -433,36 +440,74 @@ async function transcribeVideo(videoPath) {
 }
 
 // Analisar com Claude Haiku (OTIMIZADO PARA POLÍTICO)
-async function analyzeWithClaude(transcript) {
+async function analyzeWithClaude(transcript, config = {}) {
+  const { objetivo = 'viralizar', tom = 'dinamico', destino = 'todos' } = config;
+
+  const objetivoMap = {
+    viralizar: 'maximizar viralização e engajamento',
+    proposta: 'destacar propostas e posicionamentos políticos',
+    rebater: 'encontrar os melhores argumentos de defesa e contra-ataque',
+    bastidores: 'mostrar autenticidade e humanidade do candidato',
+    debate: 'destacar os momentos mais fortes do debate',
+    educar: 'transmitir informação de forma clara e memorável',
+  };
+
+  const tomMap = {
+    dinamico: 'energético, rápido e impactante',
+    serio: 'sóbrio, institucional e confiável',
+    crise: 'urgente, direto e sem rodeios — modo de defesa',
+    engracado: 'leve, com humor e descontração',
+    emocional: 'emotivo, inspirador e que toca o coração',
+  };
+
+  const destinoMap = {
+    tiktok: 'TikTok (público jovem, 15-60s, trend-driven)',
+    reels: 'Instagram Reels (público 25-40, estético e inspirador)',
+    shorts: 'YouTube Shorts (público amplo, informativo)',
+    facebook: 'Facebook (público 40+, mais tolerante a textos longos)',
+    todos: 'todas as plataformas (equilibrar formato e duração)',
+  };
+
   try {
     const { Anthropic } = await import('@anthropic-ai/sdk');
     const client = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
-    const prompt = `Você é um especialista em política e viralização de conteúdo para redes sociais.
+    const prompt = `Você é um especialista em comunicação política e viralização de conteúdo para redes sociais.
 
-Transcrição de vídeo político:
+CONFIGURAÇÃO DO CLIENTE:
+- Objetivo: ${objetivoMap[objetivo] || objetivo}
+- Tom desejado: ${tomMap[tom] || tom}
+- Destino: ${destinoMap[destino] || destino}
+
+Transcrição do vídeo:
 """
 ${transcript}
 """
 
-TAREFA: Identifique os 5-7 MELHORES momentos que VÃO VIRALIZAR em TikTok/Reels/Shorts.
+TAREFA: Com base na configuração acima, identifique os 5-7 MELHORES momentos para cortar.
 
-CRITÉRIOS DE VIRALIZAÇÃO (em ordem de importância):
-1. FORÇA E CONVICÇÃO - Tom decisivo, sem hesitação. "Eu vou fazer", não "vou tentar"
-2. PROMESSAS ESPECÍFICAS - Fala sobre o que vai fazer (saúde, educação, economia, etc)
-3. CRÍTICAS BEM COLOCADAS - Responde adversário com dados ou lógica
-4. DADOS IMPACTANTES - Números que chocam ("1 em cada 3", "duplicou", etc)
-5. PIADAS/DESCONTRAÇÕES - Momentos onde ri ou é engraçado
-6. CITAÇÕES MEMORÁVEIS - Frases que definem o posicionamento
-7. RESPOSTA EMOCIONAL - Toca em sentimentos (esperança, raiva justa, indignação)
+CRITÉRIOS (adaptados ao objetivo "${objetivo}" e tom "${tom}"):
+1. FORÇA E CONVICÇÃO - Tom decisivo, sem hesitação
+2. RELEVÂNCIA AO OBJETIVO - Alinha com o que o cliente quer comunicar
+3. DURAÇÃO IDEAL - 15-60 segundos para ${destino === 'facebook' ? 'Facebook (pode ser até 90s)' : 'redes de vídeo curto'}
+4. INÍCIO IMPACTANTE - Os primeiros 3 segundos devem prender a atenção
+5. UM PONTO PRINCIPAL - Cada clip com uma mensagem clara
 
-MUITO IMPORTANTE:
-- Ignore momentos genéricos ("muito obrigado", "é um privilégio")
-- Priorize clipes de 15-60 segundos
-- Cada clipe deve ter UM ponto principal (não misturado)
-- Ignora introduções e encerramento
+${tom === 'crise' ? `
+MODO CRISE ATIVADO:
+- Priorize momentos de defesa, esclarecimento e contra-ataque
+- Foco em clareza, seriedade e credibilidade
+- Ignore momentos de humor ou leveza
+` : ''}
+
+${objetivo === 'rebater' ? `
+MODO REBATE ATIVADO:
+- Identifique os argumentos mais fortes e diretos
+- Priorize momentos com dados, fatos ou lógica irrefutável
+- Destaque frases que desarmam o adversário
+` : ''}
 
 Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
 
@@ -472,38 +517,24 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
       "index": 1,
       "start": 45,
       "end": 75,
-      "reason": "Promessa sobre saúde com tom decisivo",
+      "reason": "Proposta sobre saúde com tom decisivo — gancho forte nos primeiros 3s",
       "appeal": "promessa",
       "score": 8
-    },
-    {
-      "index": 2,
-      "start": 120,
-      "end": 150,
-      "reason": "Crítica ao adversário com dados específicos",
-      "appeal": "crítica",
-      "score": 6
     }
   ]
 }
 
-Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional, força
-"score" é uma nota de 0 a 10 do potencial de viralização desse momento específico, considerando os critérios acima.`;
+Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional, força, defesa, bastidores
+"score" é nota de 0-10 do potencial considerando o objetivo e tom escolhidos.`;
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
-      messages: [
-        {
-          role: 'user',
-          content: prompt,
-        },
-      ],
+      messages: [{ role: 'user', content: prompt }],
     });
 
     const responseText = message.content[0].text;
     
-    // Limpar resposta se tiver ```json
     let cleanedText = responseText.trim();
     if (cleanedText.startsWith('```')) {
       cleanedText = cleanedText.replace(/^```json\n?/, '').replace(/\n?```$/, '');
@@ -511,7 +542,7 @@ Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional
     
     const parsed = JSON.parse(cleanedText);
 
-    logger(`Claude identified ${parsed.moments.length} moments for politician`);
+    logger(`Claude identified ${parsed.moments.length} moments — objetivo: ${objetivo}, tom: ${tom}`);
     return parsed.moments || [];
   } catch (error) {
     logger(`Claude analysis error: ${error.message}`);
