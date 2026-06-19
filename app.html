@@ -725,7 +725,7 @@
             
             <div class="form-group">
                 <label>Email</label>
-                <input type="email" id="email" value="luiza@clipmind.com">
+                <input type="email" id="email" value="luiza@inovashot.com.br">
             </div>
 
             <div class="form-group">
@@ -1096,8 +1096,8 @@
                     throw new Error(data.error || 'Falha no login');
                 }
 
-                localStorage.setItem('clipmind_token', data.access_token);
-                localStorage.setItem('clipmind_email', data.email);
+                localStorage.setItem('inovashot_token', data.access_token);
+                localStorage.setItem('inovashot_email', data.email);
             },
 
             async login() {
@@ -1203,13 +1203,13 @@
             },
 
             logout() {
-                localStorage.removeItem('clipmind_token');
-                localStorage.removeItem('clipmind_email');
+                localStorage.removeItem('inovashot_token');
+                localStorage.removeItem('inovashot_email');
                 this.setPage('login');
             },
 
             getToken() {
-                return localStorage.getItem('clipmind_token');
+                return localStorage.getItem('inovashot_token');
             },
 
             showQRModal(url) {
