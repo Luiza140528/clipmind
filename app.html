@@ -1418,6 +1418,14 @@
 
             // ---------- CLIPS REAIS ----------
             buildClipRowsHtml(clips) {
+                const horarioIdeal = {
+                    tiktok: '19h-21h (pico TikTok Brasil)',
+                    reels: '11h-13h ou 19h-20h (pico Reels)',
+                    shorts: '12h-14h ou 20h-22h (pico Shorts)',
+                    facebook: '12h-13h ou 18h-19h (pico Facebook)',
+                    todos: '19h-21h (melhor horário geral)',
+                };
+
                 return clips.map(clip => {
                     const date = clip.created_at
                         ? new Date(clip.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
@@ -1428,14 +1436,39 @@
                         ? `${clip.virality_score}/10`
                         : '-';
 
-                    const hookSection = (clip.hook_a || clip.hook_b) ? `
-                        <tr style="background: rgba(168,85,247,0.05);">
-                            <td colspan="5" style="padding: 10px 16px;">
-                                <div style="font-size: 11px; color: #c084fc; font-weight: 700; margin-bottom: 6px;">⚡ DOUBLE-HOOK A/B</div>
-                                ${clip.hook_a ? `<div style="font-size: 12px; color: #e0e0ff; margin-bottom: 4px;"><span style="color:#f472b6; font-weight:700;">A</span> ${clip.hook_a}</div>` : ''}
-                                ${clip.hook_b ? `<div style="font-size: 12px; color: #e0e0ff;"><span style="color:#38bdf8; font-weight:700;">B</span> ${clip.hook_b}</div>` : ''}
+                    const destino = localStorage.getItem('inovashot_destino') || 'todos';
+                    const horario = horarioIdeal[destino] || horarioIdeal.todos;
+
+                    const pacotePostagem = `
+                        <tr style="background: rgba(168,85,247,0.04); border-top: 1px solid #2d2458;">
+                            <td colspan="5" style="padding: 14px 16px;">
+                                <div style="font-size: 11px; color: #c084fc; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">📦 PACOTE DE POSTAGEM</div>
+                                
+                                ${clip.hook_a || clip.hook_b ? `
+                                <div style="margin-bottom: 10px;">
+                                    <div style="font-size: 11px; color: #a0a0c0; margin-bottom: 5px;">⚡ DOUBLE-HOOK A/B — escolha um pra legenda:</div>
+                                    ${clip.hook_a ? `<div style="font-size: 12px; color: #e0e0ff; margin-bottom: 4px; cursor:pointer; padding: 6px 10px; background: rgba(244,114,182,0.1); border-radius: 6px; border-left: 3px solid #f472b6;" onclick="navigator.clipboard.writeText('${clip.hook_a.replace(/'/g, "\\'")}'); alert('Hook A copiado!')"><span style="color:#f472b6; font-weight:700;">A</span> ${clip.hook_a} <span style="color:#4a4060; font-size:10px;">📋 copiar</span></div>` : ''}
+                                    ${clip.hook_b ? `<div style="font-size: 12px; color: #e0e0ff; cursor:pointer; padding: 6px 10px; background: rgba(56,189,248,0.1); border-radius: 6px; border-left: 3px solid #38bdf8;" onclick="navigator.clipboard.writeText('${clip.hook_b.replace(/'/g, "\\'")}'); alert('Hook B copiado!')"><span style="color:#38bdf8; font-weight:700;">B</span> ${clip.hook_b} <span style="color:#4a4060; font-size:10px;">📋 copiar</span></div>` : ''}
+                                </div>` : ''}
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                                    <div style="background: #1a1040; border-radius: 8px; padding: 10px;">
+                                        <div style="font-size: 10px; color: #a0a0c0; margin-bottom: 3px;">🕐 Melhor horário</div>
+                                        <div style="font-size: 12px; color: #fff; font-weight: 600;">${horario}</div>
+                                    </div>
+                                    <div style="background: #1a1040; border-radius: 8px; padding: 10px;">
+                                        <div style="font-size: 10px; color: #a0a0c0; margin-bottom: 3px;">⭐ Nota de viralidade</div>
+                                        <div style="font-size: 12px; color: #f472b6; font-weight: 700;">${score}</div>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                    <a href="${shareUrl}" target="_blank" rel="noopener" style="text-decoration: none; background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer;">⬇️ Baixar Clip</a>
+                                    <button onclick="appState.showQRModal('${shareUrl}')" style="background: transparent; color: #a855f7; border: 1px solid #a855f7; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer;">📲 QR Code</button>
+                                    <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copiado!')" style="background: transparent; color: #38bdf8; border: 1px solid #38bdf8; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; cursor: pointer;">🔗 Copiar Link</button>
+                                </div>
                             </td>
-                        </tr>` : '';
+                        </tr>`;
 
                     return `<tr>
                         <td>${clip.title || 'Clip'}</td>
@@ -1443,10 +1476,9 @@
                         <td>${duration}</td>
                         <td>${date}</td>
                         <td>
-                            <a class="btn-action" href="${shareUrl}" target="_blank" rel="noopener" style="text-decoration: none;">Baixar</a>
-                            <button class="btn-action" onclick="appState.showQRModal('${shareUrl}')">Compartilhar</button>
+                            <button onclick="this.closest('tr').nextElementSibling.style.display = this.closest('tr').nextElementSibling.style.display === 'none' ? 'table-row' : 'none'" style="background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; cursor: pointer;">📦 Postar</button>
                         </td>
-                    </tr>${hookSection}`;
+                    </tr><tr style="display:none">${pacotePostagem.replace('<tr style="background: rgba(168,85,247,0.04); border-top: 1px solid #2d2458;"><td colspan="5"', '<td colspan="5"').replace('</td>\n                        </tr>', '</td>')}</tr>`;
                 }).join('');
             },
 
