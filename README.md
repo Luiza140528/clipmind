@@ -1,3 +1,3 @@
 # InovaShot 
 
-Acesse: https://luiza140528.github.io/clipmind/
+Acesse: https://luiza140528.github.io/InovaShot/
