@@ -326,6 +326,8 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
         duration: moment.end - moment.start,
         storage_url: storagePath,
         virality_score: moment.score ?? null,
+        hook_a: moment.hook_a || null,
+        hook_b: moment.hook_b || null,
       });
 
       clipIds.push(clipId);
@@ -519,13 +521,18 @@ Retorne APENAS JSON válido (sem markdown, sem \`\`\`):
       "end": 75,
       "reason": "Proposta sobre saúde com tom decisivo — gancho forte nos primeiros 3s",
       "appeal": "promessa",
-      "score": 8
+      "score": 8,
+      "hook_a": "Você sabia que 1 em cada 3 famílias não tem acesso a médico? Isso vai mudar.",
+      "hook_b": "O que você faria se pudesse garantir saúde pra toda sua família? Aqui está o plano."
     }
   ]
 }
 
 Appeal pode ser: promessa, crítica, dados, piada, citação, resposta_emocional, força, defesa, bastidores
-"score" é nota de 0-10 do potencial considerando o objetivo e tom escolhidos.`;
+"score" é nota de 0-10 do potencial considerando o objetivo e tom escolhidos.
+"hook_a" é um gancho polêmico/curiosidade para os primeiros 3 segundos (versão A do Double-Hook).
+"hook_b" é um gancho focado em benefício direto ou pergunta impactante (versão B do Double-Hook).
+Ambos os hooks devem ter no máximo 15 palavras e ser escritos em português brasileiro natural.`;
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
