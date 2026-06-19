@@ -589,7 +589,21 @@
             background: rgba(201, 168, 76, 0.05);
         }
 
-        .btn-action {
+        .tema-btn {
+            background: #2d2458;
+            color: #a0a0c0;
+            border: 1px solid #3b2f6e;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tema-btn:hover, .tema-btn.active {
+            background: linear-gradient(135deg, #f472b6, #a855f7);
+            color: #fff;
+            border-color: transparent;
+        }
             padding: 6px 10px;
             background: transparent;
             border: 1px solid #a855f7;
@@ -822,6 +836,11 @@
                     </button>
                 </li>
                 <li>
+                    <button class="sidebar-menu-item" id="menu-politico" onclick="appState.setActiveView('politico')" style="color: #f472b6;">
+                        🗳️ Módulo Político
+                    </button>
+                </li>
+                <li>
                     <button class="sidebar-menu-item" id="menu-config" onclick="appState.setActiveView('config')">
                         ⚙️ Configurações
                     </button>
@@ -1008,6 +1027,118 @@
                 </div>
             </div>
 
+            <!-- VIEW: MÓDULO POLÍTICO -->
+            <div id="view-politico" class="view-content">
+                <h2 style="background: linear-gradient(90deg, #f472b6, #a855f7, #38bdf8); background-size: 300%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; font-size: 24px;">🗳️ Módulo Político</h2>
+                <p style="color: #a0a0c0; font-size: 13px; margin-bottom: 24px;">Central de campanha inteligente — tudo que você precisa para vencer nas redes.</p>
+
+                <!-- BOTÃO S.O.S. -->
+                <div style="background: linear-gradient(135deg, rgba(244,63,94,0.15), rgba(168,85,247,0.1)); border: 2px solid #f43f5e; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                    <div style="font-size: 28px; margin-bottom: 8px;">🚨</div>
+                    <div style="font-size: 18px; font-weight: 800; color: #f43f5e; margin-bottom: 6px;">BOTÃO S.O.S.</div>
+                    <div style="font-size: 13px; color: #a0a0c0; margin-bottom: 16px;">Acionamento de emergência — entrega em 60 minutos</div>
+                    <input type="text" id="sosWhatsapp" placeholder="Link do WhatsApp S.O.S. (ex: https://wa.me/5599...)" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 13px; margin-bottom: 12px;">
+                    <a id="sosBtn" href="#" target="_blank" onclick="appState.openSOS()" style="display: inline-block; background: linear-gradient(135deg, #f43f5e, #f472b6); color: #fff; font-weight: 800; border: none; border-radius: 10px; padding: 12px 30px; font-size: 15px; cursor: pointer; text-decoration: none; box-shadow: 0 0 20px rgba(244,63,94,0.5);">🚨 ACIONAR EMERGÊNCIA</button>
+                    <div style="font-size: 11px; color: #a0a0c0; margin-top: 10px;">Configure o link do WhatsApp acima antes de acionar</div>
+                </div>
+
+                <!-- PERFIL DO CANDIDATO -->
+                <div style="background: #1e1650; border: 1px solid #3b2f6e; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #c084fc; margin-bottom: 16px; font-size: 16px;">👤 Perfil do Candidato</h3>
+                    <div style="display: grid; gap: 12px;">
+                        <div>
+                            <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 4px;">Nome completo</label>
+                            <input type="text" id="candidatoNome" placeholder="Ex: João Silva" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 4px;">Número eleitoral</label>
+                                <input type="text" id="candidatoNumero" placeholder="Ex: 15" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                            </div>
+                            <div>
+                                <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 4px;">Partido</label>
+                                <input type="text" id="candidatoPartido" placeholder="Ex: MDB" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 4px;">Cargo disputado</label>
+                                <select id="candidatoCargo" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                                    <option>Vereador</option>
+                                    <option>Prefeito</option>
+                                    <option>Deputado Estadual</option>
+                                    <option>Deputado Federal</option>
+                                    <option>Senador</option>
+                                    <option>Governador</option>
+                                    <option>Presidente</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 4px;">Cidade</label>
+                                <input type="text" id="candidatoCidade" placeholder="Ex: São Luís - MA" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                            </div>
+                        </div>
+                        <button onclick="appState.salvarPerfil()" style="background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; font-size: 14px;">💾 Salvar Perfil</button>
+                    </div>
+                </div>
+
+                <!-- GUIA DE TOM DE VOZ -->
+                <div style="background: #1e1650; border: 1px solid #3b2f6e; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #c084fc; margin-bottom: 6px; font-size: 16px;">⚖️ Guia Jurídico-Eleitoral</h3>
+                    <p style="color: #a0a0c0; font-size: 12px; margin-bottom: 16px;">Palavras monitoradas automaticamente em cada transcrição</p>
+                    
+                    <div style="margin-bottom: 14px;">
+                        <label style="color: #f43f5e; font-size: 13px; font-weight: 700; display: block; margin-bottom: 8px;">🚫 Palavras PROIBIDAS (risco jurídico)</label>
+                        <textarea id="palavrasProibidas" placeholder="Uma por linha. Ex:&#10;corrupto&#10;bandido&#10;mentiroso&#10;ladrão" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #f43f5e44; border-radius: 8px; padding: 10px; font-size: 13px; min-height: 100px; resize: vertical;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="color: #4ade80; font-size: 13px; font-weight: 700; display: block; margin-bottom: 8px;">✅ Palavras RECOMENDADAS (tom ideal)</label>
+                        <textarea id="palavrasRecomendadas" placeholder="Uma por linha. Ex:&#10;proposta&#10;compromisso&#10;investimento&#10;resultado" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #4ade8044; border-radius: 8px; padding: 10px; font-size: 13px; min-height: 100px; resize: vertical;"></textarea>
+                    </div>
+
+                    <button onclick="appState.salvarGuiaJuridico()" style="background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer; font-size: 14px; width: 100%;">💾 Salvar Guia Jurídico</button>
+                </div>
+
+                <!-- BANCO DE MEMÓRIA POR TEMA -->
+                <div style="background: #1e1650; border: 1px solid #3b2f6e; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #c084fc; margin-bottom: 6px; font-size: 16px;">🧠 Banco de Memória por Tema</h3>
+                    <p style="color: #a0a0c0; font-size: 12px; margin-bottom: 16px;">Organize seus melhores momentos por pauta para reusar em debates</p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;" id="temasFiltros">
+                        <button onclick="appState.filtrarTema('todos')" class="tema-btn active" data-tema="todos">Todos</button>
+                        <button onclick="appState.filtrarTema('saude')" class="tema-btn" data-tema="saude">🏥 Saúde</button>
+                        <button onclick="appState.filtrarTema('educacao')" class="tema-btn" data-tema="educacao">📚 Educação</button>
+                        <button onclick="appState.filtrarTema('seguranca')" class="tema-btn" data-tema="seguranca">🛡️ Segurança</button>
+                        <button onclick="appState.filtrarTema('economia')" class="tema-btn" data-tema="economia">💰 Economia</button>
+                        <button onclick="appState.filtrarTema('crise')" class="tema-btn" data-tema="crise">🚨 Crise</button>
+                    </div>
+                    <div id="bancoMemoria" style="color: #a0a0c0; font-size: 13px; text-align: center; padding: 20px;">
+                        Seus clips aparecerão aqui organizados por tema após o processamento.
+                    </div>
+                </div>
+
+                <!-- ALERTAS DE TENDÊNCIAS -->
+                <div style="background: #1e1650; border: 1px solid #3b2f6e; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+                    <h3 style="color: #c084fc; margin-bottom: 6px; font-size: 16px;">📈 Tendências da Semana</h3>
+                    <p style="color: #a0a0c0; font-size: 12px; margin-bottom: 16px;">Formatos e áudios em alta no TikTok e Reels</p>
+                    <button onclick="appState.buscarTendencias()" style="background: linear-gradient(135deg, #f472b6, #a855f7); color: #fff; border: none; border-radius: 8px; padding: 12px 24px; font-weight: 700; cursor: pointer; font-size: 14px; margin-bottom: 14px;">🔍 Buscar Tendências Agora</button>
+                    <div id="tendenciasResult" style="color: #a0a0c0; font-size: 13px;">Toque em "Buscar" para ver o que está viral agora.</div>
+                </div>
+
+                <!-- MARCA D'ÁGUA RASCUNHO -->
+                <div style="background: #1e1650; border: 1px solid #3b2f6e; border-radius: 16px; padding: 20px;">
+                    <h3 style="color: #c084fc; margin-bottom: 6px; font-size: 16px;">🔒 Marca d'Água de Segurança</h3>
+                    <p style="color: #a0a0c0; font-size: 12px; margin-bottom: 16px;">Ative para gerar clips com "RASCUNHO" em diagonal — apenas para aprovação interna</p>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <label style="position: relative; display: inline-block; width: 50px; height: 26px;">
+                            <input type="checkbox" id="modoRascunho" style="opacity: 0; width: 0; height: 0;" onchange="appState.toggleRascunho(this.checked)">
+                            <span id="toggleRascunho" style="position: absolute; cursor: pointer; inset: 0; background: #3b2f6e; border-radius: 26px; transition: 0.3s;"></span>
+                        </label>
+                        <span style="color: #fff; font-size: 14px;" id="rascunhoLabel">Modo Rascunho: <strong style="color: #a0a0c0;">Desativado</strong></span>
+                    </div>
+                </div>
+            </div>
+
             <!-- VIEW: CONFIG -->
             <div id="view-config" class="view-content">
                 <h2 style="color: #a855f7; margin-bottom: 20px;">⚙️ Configurações</h2>
@@ -1061,6 +1192,10 @@
                 
                 this.activeView = view;
                 
+                if (view === 'politico') {
+                    this.initModuloPolitico();
+                }
+
                 if (window.innerWidth <= 768) {
                     this.closeSidebar();
                 }
@@ -1520,6 +1655,115 @@
                 status.classList.remove('active');
                 document.getElementById('processButton').disabled = false;
                 document.getElementById('uploadFileButton').disabled = false;
+            },
+
+            // ===== MÓDULO POLÍTICO =====
+            salvarPerfil() {
+                const perfil = {
+                    nome: document.getElementById('candidatoNome').value,
+                    numero: document.getElementById('candidatoNumero').value,
+                    partido: document.getElementById('candidatoPartido').value,
+                    cargo: document.getElementById('candidatoCargo').value,
+                    cidade: document.getElementById('candidatoCidade').value,
+                };
+                localStorage.setItem('inovashot_perfil', JSON.stringify(perfil));
+                alert(`✅ Perfil de ${perfil.nome || 'candidato'} salvo com sucesso!`);
+            },
+
+            carregarPerfil() {
+                const saved = localStorage.getItem('inovashot_perfil');
+                if (!saved) return;
+                const p = JSON.parse(saved);
+                if (p.nome) document.getElementById('candidatoNome').value = p.nome;
+                if (p.numero) document.getElementById('candidatoNumero').value = p.numero;
+                if (p.partido) document.getElementById('candidatoPartido').value = p.partido;
+                if (p.cargo) document.getElementById('candidatoCargo').value = p.cargo;
+                if (p.cidade) document.getElementById('candidatoCidade').value = p.cidade;
+            },
+
+            salvarGuiaJuridico() {
+                const guia = {
+                    proibidas: document.getElementById('palavrasProibidas').value,
+                    recomendadas: document.getElementById('palavrasRecomendadas').value,
+                };
+                localStorage.setItem('inovashot_guia', JSON.stringify(guia));
+                alert('✅ Guia jurídico salvo! As próximas transcrições serão monitoradas.');
+            },
+
+            carregarGuiaJuridico() {
+                const saved = localStorage.getItem('inovashot_guia');
+                if (!saved) return;
+                const g = JSON.parse(saved);
+                if (g.proibidas) document.getElementById('palavrasProibidas').value = g.proibidas;
+                if (g.recomendadas) document.getElementById('palavrasRecomendadas').value = g.recomendadas;
+            },
+
+            openSOS() {
+                const link = document.getElementById('sosWhatsapp').value.trim();
+                if (!link) {
+                    alert('⚠️ Configure o link do WhatsApp S.O.S. primeiro!');
+                    return false;
+                }
+                localStorage.setItem('inovashot_sos', link);
+                document.getElementById('sosBtn').href = link;
+                return true;
+            },
+
+            filtrarTema(tema) {
+                document.querySelectorAll('.tema-btn').forEach(b => b.classList.remove('active'));
+                document.querySelector(`[data-tema="${tema}"]`)?.classList.add('active');
+                // Futuramente: filtrar clips por tema no banco
+                document.getElementById('bancoMemoria').innerHTML = 
+                    tema === 'todos' 
+                    ? 'Seus clips aparecerão aqui organizados por tema após o processamento.'
+                    : `Exibindo clips de <strong>${tema}</strong>. Em breve os clips processados aparecerão aqui filtrados por pauta.`;
+            },
+
+            async buscarTendencias() {
+                const el = document.getElementById('tendenciasResult');
+                el.innerHTML = '⏳ Buscando tendências com IA...';
+                try {
+                    const res = await fetch('https://api.anthropic.com/v1/messages', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: 'claude-sonnet-4-6',
+                            max_tokens: 500,
+                            messages: [{
+                                role: 'user',
+                                content: `Liste 5 tendências atuais de formato e conteúdo para TikTok e Reels no Brasil em ${new Date().toLocaleDateString('pt-BR')}. Foco em conteúdo político e criadores de conteúdo. Seja específico e prático. Responda em português, formato lista simples.`
+                            }]
+                        })
+                    });
+                    const data = await res.json();
+                    const text = data.content?.[0]?.text || 'Não foi possível buscar tendências agora.';
+                    el.innerHTML = `<div style="line-height: 1.8; font-size: 13px;">${text.replace(/\n/g, '<br>')}</div>`;
+                } catch(e) {
+                    el.innerHTML = '❌ Erro ao buscar tendências. Tente novamente.';
+                }
+            },
+
+            toggleRascunho(ativo) {
+                localStorage.setItem('inovashot_rascunho', ativo ? '1' : '0');
+                const label = document.getElementById('rascunhoLabel');
+                const toggle = document.getElementById('toggleRascunho');
+                if (ativo) {
+                    label.innerHTML = 'Modo Rascunho: <strong style="color: #f43f5e;">Ativado</strong>';
+                    toggle.style.background = 'linear-gradient(135deg, #f472b6, #a855f7)';
+                } else {
+                    label.innerHTML = 'Modo Rascunho: <strong style="color: #a0a0c0;">Desativado</strong>';
+                    toggle.style.background = '#3b2f6e';
+                }
+            },
+
+            initModuloPolitico() {
+                this.carregarPerfil();
+                this.carregarGuiaJuridico();
+                const sos = localStorage.getItem('inovashot_sos');
+                if (sos) document.getElementById('sosWhatsapp').value = sos;
+                const rascunho = localStorage.getItem('inovashot_rascunho') === '1';
+                document.getElementById('modoRascunho').checked = rascunho;
+                this.toggleRascunho(rascunho);
             },
         };
 
