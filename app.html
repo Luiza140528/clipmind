@@ -3,13 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClipMind - Plataforma Profissional</title>
+    <title>InovaShot - Plataforma Profissional</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --neon1: #f472b6;
+            --neon2: #a855f7;
+            --neon3: #38bdf8;
+            --bg: #0e0820;
+            --card: #1e1650;
+            --border: #3b2f6e;
+            --muted: #a0a0c0;
+        }
+
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; text-shadow: 0 0 20px #f472b6, 0 0 40px #a855f7; }
+            50%       { opacity: 0.85; text-shadow: 0 0 40px #38bdf8, 0 0 80px #a855f7; }
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f472b6, #a855f7, #38bdf8, #f472b6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite, pulse 2s ease-in-out infinite;
+            display: inline-block;
+        }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0D1B2A;
+            background: #0e0820;
             color: #FFFFFF;
             overflow: hidden;
         }
@@ -46,13 +77,13 @@
 
         .landing-logo { font-size: 48px; margin-bottom: 15px; }
         .landing-content h1 { font-size: 36px; margin-bottom: 8px; color: #FFFFFF; }
-        .landing-tagline { font-size: 16px; color: #C9A84C; margin-bottom: 15px; font-weight: 500; }
+        .landing-tagline { font-size: 16px; color: #a855f7; margin-bottom: 15px; font-weight: 500; }
         .landing-desc { font-size: 14px; color: #B0B0B0; margin-bottom: 20px; line-height: 1.5; }
 
         .btn-start {
             padding: 14px 40px;
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
             border: none;
             border-radius: 8px;
             font-weight: 600;
@@ -61,7 +92,7 @@
             font-size: 15px;
         }
 
-        .btn-start:hover { background: #E0C158; transform: translateY(-2px); }
+        .btn-start:hover { background: #c084fc; transform: translateY(-2px); }
 
         .trust-grid {
             display: grid;
@@ -92,13 +123,13 @@
 
         .plan-card {
             background: rgba(13, 27, 42, 0.95);
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
             padding: 12px;
             border-radius: 8px;
             text-align: center;
         }
 
-        .plan-name { font-size: 12px; font-weight: 600; color: #C9A84C; margin-bottom: 6px; }
+        .plan-name { font-size: 12px; font-weight: 600; color: #a855f7; margin-bottom: 6px; }
         .plan-price { font-size: 16px; font-weight: bold; color: #FFFFFF; margin-bottom: 4px; }
         .plan-feature { font-size: 10px; color: #B0B0B0; }
 
@@ -112,7 +143,7 @@
 
         .login-box {
             background: rgba(13, 27, 42, 0.95);
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
             border-radius: 12px;
             padding: 40px;
             width: 100%;
@@ -137,7 +168,7 @@
             width: 100%;
             padding: 10px;
             background: rgba(26, 45, 58, 0.5);
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
             border-radius: 6px;
             color: #FFFFFF;
             font-size: 14px;
@@ -145,7 +176,7 @@
 
         .form-group input:focus {
             outline: none;
-            border-color: #C9A84C;
+            border-color: #a855f7;
         }
 
         .password-group {
@@ -160,8 +191,8 @@
 
         .eye-toggle {
             background: transparent;
-            border: 1px solid #C9A84C;
-            color: #C9A84C;
+            border: 1px solid #a855f7;
+            color: #a855f7;
             padding: 12px 14px;
             border-radius: 6px;
             cursor: pointer;
@@ -171,15 +202,15 @@
         }
 
         .eye-toggle:hover {
-            border-color: #E0C158;
+            border-color: #c084fc;
             background: rgba(201, 168, 76, 0.2);
         }
 
         .btn-login {
             width: 100%;
             padding: 12px;
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
             border: none;
             border-radius: 8px;
             font-weight: 600;
@@ -188,7 +219,7 @@
             transition: all 0.3s;
         }
 
-        .btn-login:hover { background: #E0C158; }
+        .btn-login:hover { background: #c084fc; }
 
         .social-divider {
             display: flex;
@@ -204,7 +235,7 @@
             content: '';
             flex: 1;
             height: 1px;
-            background: #1a2d3a;
+            background: #16103a;
         }
 
         .social-buttons {
@@ -217,7 +248,7 @@
         .btn-social {
             padding: 10px;
             background: transparent;
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
             color: #B0B0B0;
             border-radius: 6px;
             cursor: pointer;
@@ -227,8 +258,8 @@
         }
 
         .btn-social:hover {
-            border-color: #C9A84C;
-            color: #C9A84C;
+            border-color: #a855f7;
+            color: #a855f7;
         }
 
         .login-links {
@@ -239,7 +270,7 @@
         }
 
         .login-links a {
-            color: #C9A84C;
+            color: #a855f7;
             text-decoration: none;
         }
 
@@ -255,7 +286,7 @@
         }
 
         .signup-link a {
-            color: #C9A84C;
+            color: #a855f7;
             text-decoration: none;
             font-weight: 600;
         }
@@ -272,7 +303,7 @@
         .sidebar-drawer {
             width: 260px;
             background: rgba(13, 27, 42, 0.98);
-            border-right: 1px solid #1a2d3a;
+            border-right: 1px solid #16103a;
             padding: 20px;
             height: 100vh;
             overflow-y: auto;
@@ -290,7 +321,7 @@
         .sidebar-logo {
             font-size: 20px;
             font-weight: bold;
-            color: #C9A84C;
+            color: #a855f7;
             margin-bottom: 30px;
         }
 
@@ -321,18 +352,18 @@
 
         .sidebar-menu-item:hover {
             background: rgba(201, 168, 76, 0.1);
-            color: #C9A84C;
+            color: #a855f7;
         }
 
         .sidebar-menu-item.active {
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
             font-weight: 600;
         }
 
         .sidebar-divider {
             height: 1px;
-            background: #1a2d3a;
+            background: #16103a;
             margin: 20px 0;
         }
 
@@ -381,7 +412,7 @@
             align-items: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #1a2d3a;
+            border-bottom: 1px solid #16103a;
         }
 
         .dashboard-title {
@@ -393,7 +424,7 @@
         .menu-toggle {
             display: none;
             background: transparent;
-            color: #C9A84C;
+            color: #a855f7;
             border: none;
             cursor: pointer;
             font-size: 24px;
@@ -402,8 +433,8 @@
         .logout-btn {
             padding: 8px 16px;
             background: transparent;
-            color: #C9A84C;
-            border: 1px solid #C9A84C;
+            color: #a855f7;
+            border: 1px solid #a855f7;
             border-radius: 6px;
             cursor: pointer;
             font-size: 13px;
@@ -412,8 +443,8 @@
         }
 
         .logout-btn:hover {
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
         }
 
         .view-content {
@@ -448,8 +479,8 @@
         .btn-upgrade {
             padding: 6px 12px;
             background: transparent;
-            border: 1px solid #C9A84C;
-            color: #C9A84C;
+            border: 1px solid #a855f7;
+            color: #a855f7;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
@@ -458,14 +489,14 @@
         }
 
         .btn-upgrade:hover {
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
         }
 
         .progress-bar-container {
             width: 100%;
             height: 8px;
-            background: #0D1B2A;
+            background: #0e0820;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 8px;
@@ -473,7 +504,7 @@
 
         .progress-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, #C9A84C, #E0C158);
+            background: linear-gradient(90deg, #a855f7, #c084fc);
             width: 47%;
             transition: width 0.3s;
         }
@@ -487,7 +518,7 @@
         /* UPLOAD BOX */
         .upload-box {
             background: rgba(13, 27, 42, 0.95);
-            border: 2px dashed #C9A84C;
+            border: 2px dashed #a855f7;
             border-radius: 12px;
             padding: 50px 40px;
             text-align: center;
@@ -497,19 +528,19 @@
         }
 
         .upload-box:hover {
-            border-color: #E0C158;
+            border-color: #c084fc;
             background: rgba(13, 27, 42, 0.98);
         }
 
         .upload-box.drag-over {
             background: rgba(201, 168, 76, 0.1);
-            border-color: #E0C158;
+            border-color: #c084fc;
         }
 
         .upload-icon { font-size: 48px; margin-bottom: 15px; }
         .upload-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
         .upload-subtitle { font-size: 12px; color: #B0B0B0; margin-bottom: 15px; }
-        .upload-status { font-size: 11px; color: #C9A84C; margin-top: 15px; font-style: italic; display: none; }
+        .upload-status { font-size: 11px; color: #a855f7; margin-top: 15px; font-style: italic; display: none; }
         .upload-status.active { display: block; }
 
         #fileInput { display: none; }
@@ -517,7 +548,7 @@
         /* CLIPS TABLE */
         .clips-section {
             background: rgba(13, 27, 42, 0.95);
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
             border-radius: 10px;
             padding: 25px;
         }
@@ -543,14 +574,14 @@
             text-align: left;
             font-size: 12px;
             font-weight: 600;
-            color: #C9A84C;
+            color: #a855f7;
             text-transform: uppercase;
-            border-bottom: 1px solid #1a2d3a;
+            border-bottom: 1px solid #16103a;
         }
 
         .clips-table td {
             padding: 12px;
-            border-bottom: 1px solid #1a2d3a;
+            border-bottom: 1px solid #16103a;
             font-size: 13px;
         }
 
@@ -561,8 +592,8 @@
         .btn-action {
             padding: 6px 10px;
             background: transparent;
-            border: 1px solid #C9A84C;
-            color: #C9A84C;
+            border: 1px solid #a855f7;
+            color: #a855f7;
             border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
@@ -572,8 +603,8 @@
         }
 
         .btn-action:hover {
-            background: #C9A84C;
-            color: #0D1B2A;
+            background: #a855f7;
+            color: #0e0820;
         }
 
         /* ANALYTICS */
@@ -589,7 +620,7 @@
             padding: 25px;
             border-radius: 10px;
             text-align: center;
-            border: 1px solid #1a2d3a;
+            border: 1px solid #16103a;
         }
 
         .metric-label {
@@ -632,8 +663,8 @@
     <div id="landing" class="page active">
         <div class="landing-content">
             <div class="landing-logo">🎬</div>
-            <h1>ClipMind</h1>
-            <p class="landing-tagline">Plataforma de Cortes Virais com IA</p>
+            <h1>InovaShot</h1>
+            <p class="landing-tagline">High-Retention Short-Form Video</p>
             <p class="landing-desc">Transforme vídeos longos em cortes estratégicos para TikTok, Reels e YouTube Shorts. Otimizado para políticos. Powered by IA.</p>
             <button class="btn-start" onclick="appState.setPage('login')">🚀 Começar Agora</button>
 
@@ -660,7 +691,7 @@
                 </div>
             </div>
 
-            <h2 style="color: #C9A84C; margin-top: 40px; margin-bottom: 20px;">💰 Planos</h2>
+            <h2 style="color: #a855f7; margin-top: 40px; margin-bottom: 20px;">💰 Planos</h2>
             <div class="pricing-grid">
                 <div class="plan-card">
                     <div class="plan-name">Free</div>
@@ -690,7 +721,7 @@
     <div id="login" class="page" style="position: fixed; z-index: 200;">
         <div class="login-box">
             <div class="login-logo">🎬</div>
-            <h2 class="login-title">ClipMind</h2>
+            <h2 class="login-title">InovaShot</h2>
             
             <div class="form-group">
                 <label>Email</label>
@@ -767,7 +798,7 @@
         <div class="sidebar-overlay" id="sidebarOverlay" onclick="appState.closeSidebar()"></div>
         
         <aside class="sidebar-drawer" id="sidebarDrawer">
-            <div class="sidebar-logo">🎬 ClipMind</div>
+            <div class="sidebar-logo"><span class="gradient-text">⚡ InovaShot</span></div>
             
             <ul class="sidebar-menu">
                 <li>
@@ -850,7 +881,7 @@
                     <div style="margin: 18px 0; color: #B0B0B0; font-size: 12px;">— OU —</div>
 
                     <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime" style="display: none;" onchange="appState.handleVideoFileSelect(event)">
-                    <button class="btn-start" id="uploadFileButton" style="background: transparent; border: 1px solid #C9A84C; color: #C9A84C;" onclick="document.getElementById('videoFileInput').click();">📁 Buscar Vídeo da Galeria</button>
+                    <button class="btn-start" id="uploadFileButton" style="background: transparent; border: 1px solid #a855f7; color: #a855f7;" onclick="document.getElementById('videoFileInput').click();">📁 Buscar Vídeo da Galeria</button>
                     <div id="selectedFileName" style="color: #B0B0B0; font-size: 12px; margin-top: 8px;"></div>
 
                     <div class="upload-status" id="uploadStatus">🤖 Processando com IA: isso pode levar alguns minutos...</div>
@@ -877,7 +908,7 @@
 
             <!-- VIEW: BIBLIOTECA -->
             <div id="view-biblioteca" class="view-content">
-                <h2 style="color: #C9A84C; margin-bottom: 20px;">📚 Biblioteca</h2>
+                <h2 style="color: #a855f7; margin-bottom: 20px;">📚 Biblioteca</h2>
                 <div class="clips-section">
                     <table class="clips-table">
                         <thead>
@@ -898,7 +929,7 @@
 
             <!-- VIEW: CLIPS -->
             <div id="view-clips" class="view-content">
-                <h2 style="color: #C9A84C; margin-bottom: 20px;">📁 Meus Clips (<span id="clipsCountHeader">...</span>)</h2>
+                <h2 style="color: #a855f7; margin-bottom: 20px;">📁 Meus Clips (<span id="clipsCountHeader">...</span>)</h2>
                 <p style="color: #B0B0B0; margin-bottom: 20px;">Lista completa de todos os seus clips gerados. Total de <span id="clipsCountText">...</span> clips em sua conta.</p>
                 <div class="clips-section">
                     <table class="clips-table">
@@ -920,7 +951,7 @@
 
             <!-- VIEW: ANALYTICS -->
             <div id="view-analytics" class="view-content">
-                <h2 style="color: #C9A84C; margin-bottom: 20px;">📈 Analytics</h2>
+                <h2 style="color: #a855f7; margin-bottom: 20px;">📈 Analytics</h2>
                 <p style="color: #B0B0B0; margin-bottom: 20px;">Acompanhamento de visualizações e engajamento por rede social está em desenvolvimento e chega em breve.</p>
                 <div class="metrics-grid">
                     <div class="metric-card">
@@ -940,7 +971,7 @@
 
             <!-- VIEW: CONFIG -->
             <div id="view-config" class="view-content">
-                <h2 style="color: #C9A84C; margin-bottom: 20px;">⚙️ Configurações</h2>
+                <h2 style="color: #a855f7; margin-bottom: 20px;">⚙️ Configurações</h2>
                 <p style="color: #B0B0B0; line-height: 1.8;">
                     <strong>Email:</strong> <span id="configEmail">...</span><br>
                     <strong>Plano:</strong> <span id="configPlan">...</span><br>
@@ -952,8 +983,8 @@
 
     <!-- MODAL: QR CODE PARA COMPARTILHAR CLIP -->
     <div id="qrModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:500; align-items:center; justify-content:center;">
-        <div style="background:#0D1B2A; border:1px solid #C9A84C; border-radius:12px; padding:24px; max-width:300px; text-align:center;">
-            <h3 style="color:#C9A84C; margin-bottom:12px;">📲 Escaneie pra postar</h3>
+        <div style="background:#0e0820; border:1px solid #a855f7; border-radius:12px; padding:24px; max-width:300px; text-align:center;">
+            <h3 style="color:#a855f7; margin-bottom:12px;">📲 Escaneie pra postar</h3>
             <img id="qrModalImage" src="" alt="QR Code" style="width:200px; height:200px; background:#fff; border-radius:8px; margin-bottom:12px;">
             <div style="word-break:break-all; font-size:11px; color:#B0B0B0; margin-bottom:12px;" id="qrModalLink"></div>
             <button class="btn-action" onclick="navigator.clipboard.writeText(document.getElementById('qrModalLink').textContent); alert('Link copiado!')">Copiar Link</button>
@@ -1401,7 +1432,7 @@
                         }
 
                         if (data.status === 'failed') {
-                            status.innerHTML = '❌ O processamento falhou. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #C9A84C;color:#C9A84C;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
+                            status.innerHTML = '❌ O processamento falhou. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #a855f7;color:#a855f7;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
                             button.disabled = false;
                             return;
                         }
@@ -1414,7 +1445,7 @@
                         // checar de novo em 8s
                         setTimeout(check, 8000);
                     } catch (err) {
-                        status.innerHTML = '❌ Conexão perdida. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #C9A84C;color:#C9A84C;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
+                        status.innerHTML = '❌ Conexão perdida. <button onclick="appState.retryUpload()" style="background:none;border:1px solid #a855f7;color:#a855f7;cursor:pointer;padding:4px 10px;border-radius:4px;margin-left:8px;">Tentar novamente</button>';
                         button.disabled = false;
                     }
                 };
