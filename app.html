@@ -873,6 +873,45 @@
                     <div class="upload-title">Gerar Clips de um Discurso</div>
                     <div class="upload-subtitle">Cole o link de um vídeo do YouTube, ou envie um vídeo gravado direto do celular</div>
 
+                    <!-- FORMULÁRIO DE 3 PERGUNTAS -->
+                    <div id="formPerguntas" style="background: rgba(168,85,247,0.08); border: 1px solid #3b2f6e; border-radius: 12px; padding: 20px; margin: 16px 0; text-align: left;">
+                        <p style="color: #c084fc; font-size: 13px; font-weight: 700; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px;">⚡ Configure seu clip</p>
+
+                        <div style="margin-bottom: 14px;">
+                            <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 6px;">1. Qual o objetivo?</label>
+                            <select id="objetivo" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                                <option value="viralizar">🚀 Viralizar / Engajamento</option>
+                                <option value="proposta">🗳️ Divulgar Proposta</option>
+                                <option value="rebater">🚨 Rebater Crítica / Crise</option>
+                                <option value="bastidores">🎥 Bastidores da Campanha</option>
+                                <option value="debate">⚔️ Momento de Debate</option>
+                                <option value="educar">📚 Educar / Informar</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 14px;">
+                            <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 6px;">2. Qual o tom?</label>
+                            <select id="tom" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                                <option value="dinamico">⚡ Dinâmico / Energético</option>
+                                <option value="serio">🎯 Sério / Institucional</option>
+                                <option value="crise">🚨 Crise / Urgente</option>
+                                <option value="engracado">😂 Engraçado / Leve</option>
+                                <option value="emocional">❤️ Emocional / Inspirador</option>
+                            </select>
+                        </div>
+
+                        <div style="margin-bottom: 6px;">
+                            <label style="color: #a0a0c0; font-size: 12px; display: block; margin-bottom: 6px;">3. Onde vai postar?</label>
+                            <select id="destino" style="width: 100%; background: #16103a; color: #fff; border: 1px solid #3b2f6e; border-radius: 8px; padding: 10px; font-size: 14px;">
+                                <option value="tiktok">🎵 TikTok</option>
+                                <option value="reels">📸 Instagram Reels</option>
+                                <option value="shorts">▶️ YouTube Shorts</option>
+                                <option value="facebook">👥 Facebook</option>
+                                <option value="todos">🌐 Todas as plataformas</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group" style="max-width: 400px; margin: 15px auto 0;">
                         <input type="text" id="youtubeUrlInput" placeholder="https://youtube.com/watch?v=...">
                     </div>
@@ -1307,12 +1346,21 @@
             },
 
             // ---------- PROCESSAMENTO REAL ----------
+            getFormConfig() {
+                return {
+                    objetivo: document.getElementById('objetivo')?.value || 'viralizar',
+                    tom: document.getElementById('tom')?.value || 'dinamico',
+                    destino: document.getElementById('destino')?.value || 'todos',
+                };
+            },
+
             async startProcessing() {
                 const input = document.getElementById('youtubeUrlInput');
                 const status = document.getElementById('uploadStatus');
                 const button = document.getElementById('processButton');
                 const youtube_url = input.value.trim();
                 const token = this.getToken();
+                const config = this.getFormConfig();
 
                 if (!youtube_url) {
                     alert('Cole um link do YouTube primeiro.');
@@ -1330,7 +1378,7 @@
                             'Content-Type': 'application/json',
                             Authorization: `Bearer ${token}`,
                         },
-                        body: JSON.stringify({ youtube_url }),
+                        body: JSON.stringify({ youtube_url, ...config }),
                     });
                     const data = await res.json();
 
@@ -1376,8 +1424,12 @@
                 status.classList.add('active');
 
                 try {
+                    const config = this.getFormConfig();
                     const formData = new FormData();
                     formData.append('video', file);
+                    formData.append('objetivo', config.objetivo);
+                    formData.append('tom', config.tom);
+                    formData.append('destino', config.destino);
 
                     const res = await fetch(`${API_URL}/api/process/upload`, {
                         method: 'POST',
