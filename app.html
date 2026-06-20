@@ -1832,5 +1832,410 @@
             appState.setPage(startPage);
         });
     </script>
+
+    <!-- ========== AGENTE INOVASHOT ========== -->
+    <style>
+        /* Botão flutuante */
+        #agente-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f472b6, #a855f7, #38bdf8);
+            border: none;
+            cursor: pointer;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(168,85,247,0.5);
+            transition: transform 0.2s;
+        }
+        #agente-btn:hover { transform: scale(1.1); }
+
+        /* Notificação no botão */
+        #agente-notif {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px;
+            height: 18px;
+            background: #f472b6;
+            border-radius: 50%;
+            font-size: 10px;
+            color: #fff;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Janela do chat */
+        #agente-chat {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 320px;
+            max-height: 480px;
+            background: #0e0820;
+            border: 1px solid #3b2f6e;
+            border-radius: 16px;
+            z-index: 9998;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 40px rgba(168,85,247,0.3);
+            overflow: hidden;
+        }
+        #agente-chat.open { display: flex; }
+
+        /* Header do chat */
+        .agente-header {
+            background: linear-gradient(135deg, #1e1650, #2d1b69);
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #3b2f6e;
+        }
+        .agente-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f472b6, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .agente-info { flex: 1; }
+        .agente-name { font-size: 14px; font-weight: 700; color: #fff; }
+        .agente-status { font-size: 11px; color: #4ade80; }
+        .agente-close {
+            background: transparent;
+            border: none;
+            color: #a0a0c0;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        /* Mensagens */
+        .agente-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+        }
+        .agente-messages::-webkit-scrollbar { width: 4px; }
+        .agente-messages::-webkit-scrollbar-track { background: transparent; }
+        .agente-messages::-webkit-scrollbar-thumb { background: #3b2f6e; border-radius: 4px; }
+
+        .msg-bot, .msg-user {
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .msg-bot {
+            background: #1e1650;
+            color: #e0e0ff;
+            border: 1px solid #3b2f6e;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .msg-user {
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: #fff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+        .msg-typing {
+            background: #1e1650;
+            border: 1px solid #3b2f6e;
+            align-self: flex-start;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-bottom-left-radius: 4px;
+            color: #a0a0c0;
+            font-size: 13px;
+        }
+
+        /* Sugestões rápidas */
+        .agente-sugestoes {
+            padding: 6px 14px 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .sugestao-btn {
+            padding: 5px 10px;
+            background: transparent;
+            border: 1px solid #3b2f6e;
+            border-radius: 20px;
+            color: #c084fc;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .sugestao-btn:hover { background: #1e1650; border-color: #a855f7; }
+
+        /* Input */
+        .agente-input-area {
+            padding: 10px 14px;
+            border-top: 1px solid #1e1650;
+            display: flex;
+            gap: 8px;
+        }
+        #agente-input {
+            flex: 1;
+            background: #1e1650;
+            border: 1px solid #3b2f6e;
+            border-radius: 20px;
+            padding: 8px 14px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+        #agente-input::placeholder { color: #6a6a8a; }
+        #agente-input:focus { border-color: #a855f7; }
+        #agente-send {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #38bdf8);
+            border: none;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* Pop-up de boas-vindas */
+        #agente-welcome {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 280px;
+            background: #1e1650;
+            border: 1px solid #3b2f6e;
+            border-radius: 16px;
+            padding: 16px;
+            z-index: 9997;
+            box-shadow: 0 0 30px rgba(168,85,247,0.3);
+            display: none;
+        }
+        #agente-welcome.show { display: block; }
+        .welcome-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .welcome-text { font-size: 13px; color: #a0a0c0; margin-bottom: 12px; line-height: 1.5; }
+        .welcome-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #a855f7, #38bdf8);
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .welcome-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            color: #a0a0c0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Pop-up boas-vindas -->
+    <div id="agente-welcome">
+        <button class="welcome-close" onclick="fecharWelcome()">×</button>
+        <div class="welcome-title">⚡ Olá! Sou o Agente InovaShot</div>
+        <div class="welcome-text">Posso te ajudar com o app e dar dicas de campanha política. Toque pra conversar!</div>
+        <button class="welcome-btn" onclick="abrirAgente()">💬 Falar com o Agente</button>
+    </div>
+
+    <!-- Botão flutuante -->
+    <button id="agente-btn" onclick="toggleAgente()">
+        ⚡
+        <div id="agente-notif">1</div>
+    </button>
+
+    <!-- Janela do chat -->
+    <div id="agente-chat">
+        <div class="agente-header">
+            <div class="agente-avatar">⚡</div>
+            <div class="agente-info">
+                <div class="agente-name">Agente InovaShot</div>
+                <div class="agente-status">● Online agora</div>
+            </div>
+            <button class="agente-close" onclick="toggleAgente()">×</button>
+        </div>
+        <div class="agente-messages" id="agente-messages">
+            <div class="msg-bot">Olá! 👋 Sou o Agente InovaShot. Posso te ajudar com o app ou dar dicas de campanha política. Como posso ajudar?</div>
+        </div>
+        <div class="agente-sugestoes" id="agente-sugestoes">
+            <button class="sugestao-btn" onclick="enviarSugestao('Como gero meu primeiro clip?')">🎬 Gerar clip</button>
+            <button class="sugestao-btn" onclick="enviarSugestao('Dicas para campanha política')">🗳️ Campanha</button>
+            <button class="sugestao-btn" onclick="enviarSugestao('Como funciona o Módulo Político?')">⚡ Módulo Político</button>
+            <button class="sugestao-btn" onclick="enviarSugestao('Qual meu plano atual?')">💎 Meu plano</button>
+        </div>
+        <div class="agente-input-area">
+            <input type="text" id="agente-input" placeholder="Digite sua dúvida..." onkeydown="if(event.key==='Enter') enviarMensagem()">
+            <button id="agente-send" onclick="enviarMensagem()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // ===== AGENTE INOVASHOT =====
+        let agenteAberto = false;
+        let historicoAgente = [];
+
+        // Mostrar pop-up de boas-vindas após 3 segundos no dashboard
+        setTimeout(() => {
+            const page = document.querySelector('.page.active');
+            if (page && page.id === 'dashboard') {
+                document.getElementById('agente-welcome').classList.add('show');
+            }
+        }, 3000);
+
+        // Observar mudança de página para mostrar boas-vindas
+        const observer = new MutationObserver(() => {
+            const dashboard = document.getElementById('dashboard');
+            if (dashboard && dashboard.classList.contains('active')) {
+                setTimeout(() => {
+                    const welcome = document.getElementById('agente-welcome');
+                    if (!welcome.dataset.shown) {
+                        welcome.classList.add('show');
+                        welcome.dataset.shown = 'true';
+                    }
+                }, 2000);
+            }
+        });
+        const dashboardEl = document.getElementById('dashboard');
+        if (dashboardEl) observer.observe(dashboardEl, { attributes: true, attributeFilter: ['class'] });
+
+        function fecharWelcome() {
+            document.getElementById('agente-welcome').classList.remove('show');
+        }
+
+        function abrirAgente() {
+            fecharWelcome();
+            document.getElementById('agente-chat').classList.add('open');
+            document.getElementById('agente-notif').style.display = 'none';
+            agenteAberto = true;
+        }
+
+        function toggleAgente() {
+            agenteAberto = !agenteAberto;
+            document.getElementById('agente-chat').classList.toggle('open', agenteAberto);
+            document.getElementById('agente-notif').style.display = 'none';
+            fecharWelcome();
+            if (agenteAberto) scrollMensagens();
+        }
+
+        function scrollMensagens() {
+            const msgs = document.getElementById('agente-messages');
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+
+        function adicionarMensagem(texto, tipo) {
+            const msgs = document.getElementById('agente-messages');
+            const div = document.createElement('div');
+            div.className = tipo === 'user' ? 'msg-user' : 'msg-bot';
+            div.textContent = texto;
+            msgs.appendChild(div);
+            scrollMensagens();
+        }
+
+        function mostrarTyping() {
+            const msgs = document.getElementById('agente-messages');
+            const div = document.createElement('div');
+            div.className = 'msg-typing';
+            div.id = 'typing-indicator';
+            div.textContent = '⚡ digitando...';
+            msgs.appendChild(div);
+            scrollMensagens();
+            return div;
+        }
+
+        function removerTyping() {
+            const t = document.getElementById('typing-indicator');
+            if (t) t.remove();
+        }
+
+        async function enviarMensagem() {
+            const input = document.getElementById('agente-input');
+            const texto = input.value.trim();
+            if (!texto) return;
+            input.value = '';
+
+            // Esconder sugestões após primeira mensagem
+            document.getElementById('agente-sugestoes').style.display = 'none';
+
+            adicionarMensagem(texto, 'user');
+            historicoAgente.push({ role: 'user', content: texto });
+
+            const typing = mostrarTyping();
+
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-6',
+                        max_tokens: 1000,
+                        system: `Você é o Agente InovaShot, assistente especializado da plataforma InovaShot (inovashot.com.br).
+
+Sua missão é ajudar usuários com:
+1. SUPORTE AO APP: Como gerar clips, usar o Módulo Político, entender os planos, resolver dúvidas técnicas
+2. DICAS DE CAMPANHA POLÍTICA: Estratégias de conteúdo, melhores horários para postar, como viralizar discursos, uso das redes sociais
+
+SOBRE O INOVASHOT:
+- Plataforma de geração automática de clips virais com IA
+- Funcionalidades: upload de vídeo/YouTube, transcrição com Whisper, cortes automáticos com IA, legendas animadas, remoção de silêncios, formato 9:16
+- Módulo Político: Botão S.O.S. (emergência em 60min), Perfil do Candidato, Guia Jurídico-Eleitoral, Banco de Memória por Tema, Tendências da Semana, Modo Rascunho
+- Planos: Free (3 clips/mês), Starter (R$49,90 - 30 clips), Pro (R$97,90 - 100 clips), Elite (R$197,90 - ilimitado)
+- Slogan: "Não é sorte, é o corte certo."
+
+ESTILO: Seja direto, amigável, use emojis com moderação. Respostas curtas e objetivas. Sempre em português brasileiro.`,
+                        messages: historicoAgente
+                    })
+                });
+
+                removerTyping();
+
+                const data = await response.json();
+                const resposta = data.content?.[0]?.text || 'Desculpe, não consegui responder agora. Tente novamente!';
+
+                adicionarMensagem(resposta, 'bot');
+                historicoAgente.push({ role: 'assistant', content: resposta });
+
+            } catch (err) {
+                removerTyping();
+                adicionarMensagem('Ops! Erro de conexão. Verifique sua internet e tente novamente.', 'bot');
+            }
+        }
+
+        function enviarSugestao(texto) {
+            document.getElementById('agente-input').value = texto;
+            enviarMensagem();
+        }
+    </script>
 </body>
 </html>
