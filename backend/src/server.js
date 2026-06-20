@@ -911,6 +911,47 @@ app.get('/health', (req, res) => {
 });
 
 // ============================================
+// AGENTE INOVASHOT
+// ============================================
+
+app.post('/api/agente', async (req, res) => {
+  try {
+    const { messages } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'messages obrigatório' });
+    }
+
+    const Anthropic = require('@anthropic-ai/sdk');
+    const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1000,
+      system: `Você é o Agente InovaShot, assistente especializado da plataforma InovaShot (inovashot.com.br).
+
+Sua missão é ajudar usuários com:
+1. SUPORTE AO APP: Como gerar clips, usar o Módulo Político, entender os planos, resolver dúvidas técnicas
+2. DICAS DE CAMPANHA POLÍTICA: Estratégias de conteúdo, melhores horários para postar, como viralizar discursos, uso das redes sociais
+
+SOBRE O INOVASHOT:
+- Plataforma de geração automática de clips virais com IA
+- Funcionalidades: upload de vídeo/YouTube, transcrição com Whisper, cortes automáticos com IA, legendas animadas, remoção de silêncios, formato 9:16
+- Módulo Político: Botão S.O.S. (emergência em 60min), Perfil do Candidato, Guia Jurídico-Eleitoral, Banco de Memória por Tema, Tendências da Semana, Modo Rascunho
+- Planos: Free (3 clips/mês), Starter (R$49,90 - 30 clips), Pro (R$97,90 - 100 clips), Elite (R$197,90 - ilimitado)
+- Slogan: "Não é sorte, é o corte certo."
+
+ESTILO: Seja direto, amigável, use emojis com moderação. Respostas curtas e objetivas. Sempre em português brasileiro.`,
+      messages: messages
+    });
+
+    res.json({ resposta: response.content[0].text });
+  } catch (err) {
+    console.error('Erro agente:', err);
+    res.status(500).json({ error: 'Erro ao processar mensagem' });
+  }
+});
+
+// ============================================
 // START SERVER
 // ============================================
 
