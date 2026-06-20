@@ -912,31 +912,6 @@
 
             <!-- VIEW: DASHBOARD -->
             <div id="view-dashboard" class="view-content active">
-                <div class="progress-card">
-                    <div class="progress-header">
-                        <div class="progress-label">Clips Usados</div>
-                        <button class="btn-upgrade" onclick="alert('Upgrade para Pro ou Elite!')">[ Upgrade ]</button>
-                    </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="clipsProgressFill"></div>
-                    </div>
-                    <div class="progress-text" id="clipsProgressText">Carregando...</div>
-                </div>
-
-                <div class="metrics-grid">
-                    <div class="metric-card">
-                        <div class="metric-label">Seu Plano</div>
-                        <div id="planValue" style="display:inline-block; margin-top:8px; background:#a855f7; color:#fff; font-size:15px; font-weight:700; padding:5px 16px; border-radius:20px;">...</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Views Totais</div>
-                        <div class="metric-value">Em breve</div>
-                    </div>
-                    <div class="metric-card">
-                        <div class="metric-label">Engajamento</div>
-                        <div class="metric-value">Em breve</div>
-                    </div>
-                </div>
 
                 <div class="upload-box">
                     <div class="upload-icon">📹</div>
@@ -994,6 +969,32 @@
                     <div id="selectedFileName" style="color: #B0B0B0; font-size: 14px; margin-top: 8px;"></div>
 
                     <div class="upload-status" id="uploadStatus">🤖 Processando com IA: isso pode levar alguns minutos...</div>
+                </div>
+
+                <div class="progress-card" style="margin-top: 20px;">
+                    <div class="progress-header">
+                        <div class="progress-label">Clips Usados</div>
+                        <button class="btn-upgrade" onclick="alert('Upgrade para Pro ou Elite!')">[ Upgrade ]</button>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="clipsProgressFill"></div>
+                    </div>
+                    <div class="progress-text" id="clipsProgressText">Carregando...</div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-label">Seu Plano</div>
+                        <div id="planValue" style="display:inline-block; margin-top:8px; background:#a855f7; color:#fff; font-size:15px; font-weight:700; padding:5px 16px; border-radius:20px;">...</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Views Totais</div>
+                        <div class="metric-value">Em breve</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-label">Engajamento</div>
+                        <div class="metric-value">Em breve</div>
+                    </div>
                 </div>
 
                 <div class="clips-section">
@@ -1112,6 +1113,7 @@
                         <input type="text" id="candidatoCidade" placeholder="Cidade - UF">
                     </div>
                     <button onclick="appState.salvarPerfil()" style="width:100%; background:#a855f7; color:#fff; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; font-size:15px;">💾 Salvar Perfil</button>
+                    <button onclick="appState.gerarClipPolitico()" style="width:100%; background:linear-gradient(135deg,#f472b6,#a855f7); color:#fff; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; font-size:15px; margin-top:10px;">🎬 Gerar Clip Político</button>
                 </div>
 
                 <!-- GUIA JURÍDICO -->
@@ -1722,6 +1724,20 @@
                 };
                 localStorage.setItem('inovashot_perfil', JSON.stringify(perfil));
                 alert(`✅ Perfil de ${perfil.nome || 'candidato'} salvo com sucesso!`);
+            },
+
+            gerarClipPolitico() {
+                // Pré-configura objetivo e tom para campanha política
+                this.setActiveView('dashboard');
+                setTimeout(() => {
+                    const objetivo = document.getElementById('objetivo');
+                    const tom = document.getElementById('tom');
+                    if (objetivo) objetivo.value = 'proposta';
+                    if (tom) tom.value = 'serio';
+                    // Scroll para o upload box
+                    const uploadBox = document.querySelector('.upload-box');
+                    if (uploadBox) uploadBox.scrollIntoView({ behavior: 'smooth' });
+                }, 300);
             },
 
             carregarPerfil() {
