@@ -1018,22 +1018,23 @@
 
             <!-- VIEW: BIBLIOTECA -->
             <div id="view-biblioteca" class="view-content">
-                <h2 style="color: #a855f7; margin-bottom: 20px;">📚 Biblioteca</h2>
-                <div class="clips-section">
-                    <table class="clips-table">
-                        <thead>
-                            <tr>
-                                <th>Clip</th>
-                                <th>Nota</th>
-                                <th>Duração</th>
-                                <th>Data</th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bibliotecaTableBody">
-                            <tr><td colspan="5" style="text-align: center; color: #ffffff; padding: 20px;">Carregando seus clips...</td></tr>
-                        </tbody>
-                    </table>
+                <h2 style="color: #a855f7; margin-bottom: 6px;">📚 Biblioteca</h2>
+                <p style="color: #ffffff; font-size: 14px; margin-bottom: 20px;">Todos os seus clips gerados, prontos para baixar e compartilhar.</p>
+
+                <!-- Filtros -->
+                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                    <button onclick="appState.filtrarBiblioteca('todos')" id="filtro-todos" style="padding:6px 14px; background:#a855f7; color:#fff; border:none; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer;">Todos</button>
+                    <button onclick="appState.filtrarBiblioteca('recentes')" id="filtro-recentes" style="padding:6px 14px; background:transparent; color:#a0a0c0; border:1px solid #3b2f6e; border-radius:20px; font-size:13px; cursor:pointer;">Recentes</button>
+                    <button onclick="appState.filtrarBiblioteca('longos')" id="filtro-longos" style="padding:6px 14px; background:transparent; color:#a0a0c0; border:1px solid #3b2f6e; border-radius:20px; font-size:13px; cursor:pointer;">Mais longos</button>
+                </div>
+
+                <!-- Grid de cards -->
+                <div id="biblioteca-grid" style="display:grid; gap:12px;">
+                    <div style="text-align:center; padding:40px 20px; color:#a0a0c0;">
+                        <div style="font-size:40px; margin-bottom:12px;">📭</div>
+                        <div style="font-size:15px; color:#fff; font-weight:600; margin-bottom:6px;">Nenhum clip ainda</div>
+                        <div style="font-size:13px;">Gere seu primeiro clip no Dashboard!</div>
+                    </div>
                 </div>
             </div>
 
@@ -1507,10 +1508,65 @@
             },
 
             fillClipTables(html) {
-                ['clipsTableBody', 'bibliotecaTableBody', 'meusClipsTableBody'].forEach(id => {
+                ['clipsTableBody', 'meusClipsTableBody'].forEach(id => {
                     const el = document.getElementById(id);
                     if (el) el.innerHTML = html;
                 });
+            },
+
+            renderBiblioteca(clips) {
+                const grid = document.getElementById('biblioteca-grid');
+                if (!grid) return;
+
+                if (!clips || clips.length === 0) {
+                    grid.innerHTML = `
+                        <div style="text-align:center; padding:40px 20px; color:#a0a0c0;">
+                            <div style="font-size:40px; margin-bottom:12px;">📭</div>
+                            <div style="font-size:15px; color:#fff; font-weight:600; margin-bottom:6px;">Nenhum clip ainda</div>
+                            <div style="font-size:13px;">Gere seu primeiro clip no Dashboard!</div>
+                        </div>`;
+                    return;
+                }
+
+                grid.innerHTML = clips.map(clip => {
+                    const date = clip.created_at ? new Date(clip.created_at).toLocaleDateString('pt-BR') : '--';
+                    const duration = clip.duration ? `${clip.duration}s` : '--';
+                    const shareUrl = clip.storage_url || '#';
+                    const score = clip.hook_a ? '⚡ Hook A/B' : (clip.reason ? clip.reason.substring(0, 40) + '...' : 'Clip gerado');
+
+                    return `
+                        <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+                                <div style="flex:1;">
+                                    <div style="font-size:15px; font-weight:700; color:#fff; margin-bottom:4px;">🎬 ${clip.title || 'Clip'}</div>
+                                    <div style="font-size:12px; color:#a0a0c0;">${score}</div>
+                                </div>
+                                <div style="background:rgba(168,85,247,0.15); border:1px solid #a855f7; border-radius:8px; padding:4px 10px; font-size:12px; color:#c084fc; white-space:nowrap; margin-left:8px;">${duration}</div>
+                            </div>
+                            <div style="font-size:12px; color:#6a6a8a; margin-bottom:12px;">📅 ${date}</div>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <a href="${shareUrl}" target="_blank" style="flex:1; text-align:center; background:linear-gradient(135deg,#f472b6,#a855f7); color:#fff; border:none; border-radius:8px; padding:8px; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none;">⬇️ Baixar</a>
+                                <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Link copiado!')" style="flex:1; background:transparent; color:#38bdf8; border:1px solid #38bdf8; border-radius:8px; padding:8px; font-size:13px; font-weight:700; cursor:pointer;">🔗 Copiar</button>
+                                <button onclick="appState.showQRModal('${shareUrl}')" style="background:transparent; color:#a855f7; border:1px solid #a855f7; border-radius:8px; padding:8px 12px; font-size:13px; cursor:pointer;">📲</button>
+                            </div>
+                        </div>`;
+                }).join('');
+            },
+
+            filtrarBiblioteca(tipo) {
+                // Atualizar botões de filtro
+                ['todos','recentes','longos'].forEach(t => {
+                    const btn = document.getElementById(`filtro-${t}`);
+                    if (btn) {
+                        btn.style.background = t === tipo ? '#a855f7' : 'transparent';
+                        btn.style.color = t === tipo ? '#fff' : '#a0a0c0';
+                    }
+                });
+
+                let clips = this._cachedClips || [];
+                if (tipo === 'recentes') clips = [...clips].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,5);
+                if (tipo === 'longos') clips = [...clips].sort((a,b) => (b.duration||0) - (a.duration||0));
+                this.renderBiblioteca(clips);
             },
 
             async loadClips() {
@@ -1530,9 +1586,13 @@
 
                     const data = await res.json();
                     const clips = data.clips || [];
+                    this._cachedClips = clips;
 
                     document.getElementById('clipsCountHeader').textContent = clips.length;
                     document.getElementById('clipsCountText').textContent = clips.length;
+
+                    // Renderizar Biblioteca em cards
+                    this.renderBiblioteca(clips);
 
                     if (clips.length === 0) {
                         this.fillClipTables('<tr><td colspan="5" style="text-align: center; color: #ffffff; padding: 20px;">Nenhum clip ainda. Cole um link do YouTube acima para gerar o primeiro.</td></tr>');
