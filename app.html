@@ -691,8 +691,8 @@
         }
 
         .metric-value {
-            font-size: 36px;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 700;
             color: #FFFFFF;
             margin-bottom: 5px;
         }
@@ -921,15 +921,15 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">Seu Plano</div>
-                        <div class="metric-value" id="planValue">...</div>
+                        <div id="planValue" style="display:inline-block; margin-top:8px; background:#a855f7; color:#fff; font-size:15px; font-weight:700; padding:5px 16px; border-radius:20px;">...</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Views Totais</div>
-                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
+                        <div class="metric-value">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Engajamento</div>
-                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
+                        <div class="metric-value">Em breve</div>
                     </div>
                 </div>
 
@@ -1079,16 +1079,11 @@
                 <p style="color:#a0a0c0; font-size:15px; margin-bottom:28px; padding-bottom:16px; border-bottom:1px solid #2d2458;">Central de campanha inteligente para o InovaShot.</p>
 
                 <!-- S.O.S. -->
-                <div style="background:#1a0f1f; border:1px solid #ff4444; border-radius:12px; padding:24px; margin-bottom:16px;">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-                        <span style="font-size:24px;">🚨</span>
-                        <div>
-                            <div style="font-size:17px; font-weight:800; color:#ff4444;">BOTÃO S.O.S.</div>
-                            <div style="font-size:14px; color:#a0a0c0;">Acionamento de emergência — entrega em 60 minutos</div>
-                        </div>
-                    </div>
+                <div style="background:#1e1650; border:1px solid #ff4444; border-radius:12px; padding:20px; margin-bottom:16px;">
+                    <h3 style="color:#ff4444; font-size:16px; font-weight:700; margin-bottom:4px;">🚨 Botão S.O.S.</h3>
+                    <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Acionamento de emergência — entrega em 60 minutos</p>
                     <input type="text" id="sosWhatsapp" placeholder="Link do WhatsApp S.O.S. (ex: https://wa.me/5599...)" style="margin-bottom:12px;">
-                    <a id="sosBtn" href="#" target="_blank" onclick="return appState.openSOS()" style="display:block; text-align:center; background:#ff4444; color:#fff; font-weight:800; border-radius:8px; padding:13px; font-size:15px; cursor:pointer; text-decoration:none;">🚨 ACIONAR EMERGÊNCIA</a>
+                    <a id="sosBtn" href="#" target="_blank" onclick="return appState.openSOS()" style="display:block; text-align:center; background:#ff4444; color:#fff; font-weight:700; border-radius:8px; padding:12px; font-size:15px; cursor:pointer; text-decoration:none;">🚨 Acionar Emergência</a>
                 </div>
 
                 <!-- PERFIL -->
@@ -1117,43 +1112,41 @@
                 <!-- GUIA JURÍDICO -->
                 <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:20px; margin-bottom:16px;">
                     <h3 style="color:#fff; font-size:16px; font-weight:700; margin-bottom:4px;">⚖️ Guia Jurídico-Eleitoral</h3>
-                    <p style="color:#a0a0c0; font-size:14px; margin-bottom:14px;">Palavras monitoradas automaticamente em cada transcrição</p>
-                    <label style="color:#f87171; font-size:14px; font-weight:600; display:block; margin-bottom:6px;">🚫 Palavras proibidas</label>
-                    <textarea id="palavrasProibidas" placeholder="Uma por linha. Ex:&#10;corrupto&#10;bandido" style="width:100%; min-height:80px; resize:vertical; margin-bottom:12px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#e0e0ff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
-                    <label style="color:#4ade80; font-size:14px; font-weight:600; display:block; margin-bottom:6px;">✅ Palavras recomendadas</label>
-                    <textarea id="palavrasRecomendadas" placeholder="Uma por linha. Ex:&#10;proposta&#10;compromisso" style="width:100%; min-height:80px; resize:vertical; margin-bottom:14px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#e0e0ff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
+                    <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Palavras monitoradas automaticamente em cada transcrição</p>
+                    <label style="color:#f87171; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">🚫 Palavras proibidas</label>
+                    <textarea id="palavrasProibidas" placeholder="Uma por linha. Ex:&#10;corrupto&#10;bandido" style="width:100%; min-height:80px; resize:vertical; margin-bottom:12px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#ffffff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
+                    <label style="color:#4ade80; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">✅ Palavras recomendadas</label>
+                    <textarea id="palavrasRecomendadas" placeholder="Uma por linha. Ex:&#10;proposta&#10;compromisso" style="width:100%; min-height:80px; resize:vertical; margin-bottom:14px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#ffffff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
                     <button onclick="appState.salvarGuiaJuridico()" style="width:100%; background:#a855f7; color:#fff; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; font-size:15px;">💾 Salvar Guia</button>
                 </div>
 
                 <!-- BANCO DE MEMÓRIA -->
                 <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:20px; margin-bottom:16px;">
                     <h3 style="color:#fff; font-size:16px; font-weight:700; margin-bottom:4px;">🧠 Banco de Memória por Tema</h3>
-                    <p style="color:#a0a0c0; font-size:14px; margin-bottom:14px;">Organize seus melhores momentos por pauta</p>
+                    <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Organize seus melhores momentos por pauta</p>
                     <div id="temasFiltros" style="display:flex; flex-wrap:nowrap; overflow-x:auto; gap:8px; margin-bottom:14px; scrollbar-width:none; -webkit-overflow-scrolling:touch; padding-bottom:4px;">
-                        <button onclick="appState.filtrarTema('todos')" data-tema="todos" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#7c3aed; border:1px solid #7c3aed; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">Todos</button>
-                        <button onclick="appState.filtrarTema('saude')" data-tema="saude" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🏥 Saúde</button>
-                        <button onclick="appState.filtrarTema('educacao')" data-tema="educacao" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">📚 Educação</button>
-                        <button onclick="appState.filtrarTema('seguranca')" data-tema="seguranca" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🛡️ Segurança</button>
-                        <button onclick="appState.filtrarTema('economia')" data-tema="economia" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">💰 Economia</button>
-                        <button onclick="appState.filtrarTema('crise')" data-tema="crise" style="flex-shrink:0; padding:8px 16px; font-size:14px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🚨 Crise</button>
+                        <button onclick="appState.filtrarTema('todos')" data-tema="todos" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#7c3aed; border:1px solid #7c3aed; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">Todos</button>
+                        <button onclick="appState.filtrarTema('saude')" data-tema="saude" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🏥 Saúde</button>
+                        <button onclick="appState.filtrarTema('educacao')" data-tema="educacao" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">📚 Educação</button>
+                        <button onclick="appState.filtrarTema('seguranca')" data-tema="seguranca" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🛡️ Segurança</button>
+                        <button onclick="appState.filtrarTema('economia')" data-tema="economia" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">💰 Economia</button>
+                        <button onclick="appState.filtrarTema('crise')" data-tema="crise" style="flex-shrink:0; padding:8px 16px; font-size:15px; background:#2a2a4a; border:1px solid #444; border-radius:20px; color:#fff; cursor:pointer; white-space:nowrap; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">🚨 Crise</button>
                     </div>
-                    <div id="bancoMemoria" style="color:#a0a0c0; font-size:14px; text-align:center; padding:16px;">
-                        Seus clips aparecerão aqui organizados por tema.
-                    </div>
+                    <div id="bancoMemoria" style="color:#a0a0c0; font-size:15px; text-align:center; padding:16px;">Seus clips aparecerão aqui organizados por tema.</div>
                 </div>
 
                 <!-- TENDÊNCIAS -->
                 <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:20px; margin-bottom:16px;">
                     <h3 style="color:#fff; font-size:16px; font-weight:700; margin-bottom:4px;">📈 Tendências da Semana</h3>
-                    <p style="color:#a0a0c0; font-size:14px; margin-bottom:14px;">Formatos em alta no TikTok e Reels agora</p>
-                    <button onclick="appState.buscarTendencias()" style="background:#a855f7; color:#fff; border:none; border-radius:8px; padding:11px 20px; font-weight:700; cursor:pointer; font-size:15px; margin-bottom:12px;">🔍 Buscar Tendências</button>
-                    <div id="tendenciasResult" style="color:#a0a0c0; font-size:14px;">Toque em "Buscar" para ver o que está viral agora.</div>
+                    <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Formatos em alta no TikTok e Reels agora</p>
+                    <button onclick="appState.buscarTendencias()" style="background:#a855f7; color:#fff; border:none; border-radius:8px; padding:12px 20px; font-weight:700; cursor:pointer; font-size:15px; margin-bottom:12px;">🔍 Buscar Tendências</button>
+                    <div id="tendenciasResult" style="color:#a0a0c0; font-size:15px;">Toque em "Buscar" para ver o que está viral agora.</div>
                 </div>
 
                 <!-- MODO RASCUNHO -->
                 <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:20px;">
                     <h3 style="color:#fff; font-size:16px; font-weight:700; margin-bottom:4px;">🔒 Modo Rascunho — Proposta Comercial</h3>
-                    <p style="color:#a0a0c0; font-size:14px; margin-bottom:16px;">Gera clips com marca d'água "RASCUNHO" — ideal para enviar amostras antes de fechar contrato</p>
+                    <p style="color:#a0a0c0; font-size:15px; margin-bottom:16px;">Gera clips com marca d'água "RASCUNHO" — ideal para enviar amostras antes de fechar contrato</p>
                     <div style="display:flex; align-items:center; gap:14px;">
                         <label style="position:relative; display:inline-block; width:48px; height:26px; flex-shrink:0;">
                             <input type="checkbox" id="modoRascunho" style="opacity:0; width:0; height:0;" onchange="appState.toggleRascunho(this.checked)">
@@ -1162,7 +1155,7 @@
                         <span style="color:#fff; font-size:15px;" id="rascunhoLabel">Modo Rascunho: <strong style="color:#a0a0c0;">Desativado</strong></span>
                     </div>
                 </div>
-
+            </div>
 
             <!-- VIEW: CONFIG -->
             <div id="view-config" class="view-content">
