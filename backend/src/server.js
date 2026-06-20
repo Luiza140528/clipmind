@@ -903,6 +903,117 @@ app.get('/c/:clip_id', async (req, res) => {
 });
 
 // ============================================
+// MERCADO PAGO
+// ============================================
+
+const PLANOS = {
+    starter: { nome: 'InovaShot Starter', preco: 49.90, clips: 30 },
+    pro:     { nome: 'InovaShot Pro',     preco: 97.90, clips: 100 },
+    elite:   { nome: 'InovaShot Elite',   preco: 197.90, clips: 999999 },
+};
+
+// Criar preferência de pagamento
+app.post('/api/pagamento/checkout', authenticateUser, async (req, res) => {
+    try {
+        const { plano } = req.body;
+        const userId = req.user.id;
+        const userEmail = req.user.email;
+
+        if (!PLANOS[plano]) {
+            return res.status(400).json({ error: 'Plano inválido' });
+        }
+
+        const p = PLANOS[plano];
+
+        const response = await axios.post(
+            'https://api.mercadopago.com/checkout/preferences',
+            {
+                items: [{
+                    title: p.nome,
+                    quantity: 1,
+                    currency_id: 'BRL',
+                    unit_price: p.preco,
+                }],
+                payer: { email: userEmail },
+                back_urls: {
+                    success: `https://inovashot.com.br/app.html#sucesso`,
+                    failure: `https://inovashot.com.br/app.html#falha`,
+                    pending: `https://inovashot.com.br/app.html#pendente`,
+                },
+                auto_return: 'approved',
+                external_reference: `${userId}|${plano}`,
+                notification_url: `https://clipmind-xxgn.onrender.com/api/pagamento/webhook`,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
+                    'Content-Type': 'application/json',
+                }
+            }
+        );
+
+        res.json({ 
+            init_point: response.data.init_point,
+            preferencia_id: response.data.id 
+        });
+
+    } catch (err) {
+        console.error('Erro checkout MP:', err.response?.data || err.message);
+        res.status(500).json({ error: 'Erro ao criar pagamento' });
+    }
+});
+
+// Webhook do Mercado Pago
+app.post('/api/pagamento/webhook', async (req, res) => {
+    try {
+        const { type, data } = req.body;
+
+        if (type === 'payment') {
+            const paymentId = data?.id;
+            if (!paymentId) return res.sendStatus(200);
+
+            // Buscar detalhes do pagamento
+            const paymentRes = await axios.get(
+                `https://api.mercadopago.com/v1/payments/${paymentId}`,
+                { headers: { Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}` } }
+            );
+
+            const payment = paymentRes.data;
+
+            if (payment.status === 'approved') {
+                const [userId, plano] = (payment.external_reference || '').split('|');
+                
+                if (userId && plano && PLANOS[plano]) {
+                    // Atualizar plano do usuário no Supabase
+                    await supabase
+                        .from('users')
+                        .update({ plan: plano, credits_used: 0 })
+                        .eq('id', userId);
+
+                    // Registrar transação
+                    await supabase
+                        .from('transactions')
+                        .insert({
+                            user_id: userId,
+                            amount: PLANOS[plano].preco,
+                            plan: plano,
+                            mercado_pago_id: String(paymentId),
+                            status: 'approved'
+                        });
+
+                    console.log(`✅ Plano ${plano} ativado para user ${userId}`);
+                }
+            }
+        }
+
+        res.sendStatus(200);
+    } catch (err) {
+        console.error('Erro webhook MP:', err.message);
+        res.sendStatus(200);
+    }
+});
+
+// ============================================
 // HEALTH CHECK
 // ============================================
 
