@@ -380,7 +380,7 @@
             right: 20px;
             padding: 10px;
             background: transparent;
-            color: #a855f7;
+            color: #ffffff;
             border: 1px solid #a855f7;
             border-radius: 6px;
             cursor: pointer;
@@ -423,9 +423,8 @@
         }
 
         .dashboard-title {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
-            color: #FFFFFF;
         }
 
         .menu-toggle {
@@ -440,7 +439,7 @@
         .logout-btn {
             padding: 8px 16px;
             background: transparent;
-            color: #a855f7;
+            color: #ffffff;
             border: 1px solid #a855f7;
             border-radius: 6px;
             cursor: pointer;
@@ -686,14 +685,15 @@
         }
 
         .metric-label {
-            font-size: 14px;
+            font-size: 13px;
             color: #B0B0B0;
             margin-bottom: 10px;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .metric-value {
-            font-size: 28px;
+            font-size: 18px;
             font-weight: 700;
             color: #FFFFFF;
             margin-bottom: 5px;
@@ -897,14 +897,14 @@
 
             <div class="sidebar-divider"></div>
             
-            <button class="sidebar-logout" onclick="appState.logout()">🚪 Sair</button>
+            <button class="sidebar-logout" onclick="appState.logout()">Sair</button>
         </aside>
 
         <div class="main-container">
             <div class="dashboard-header">
                 <h1 class="dashboard-title"><span class="gradient-text">⚡ InovaShot</span></h1>
                 <button class="menu-toggle" onclick="appState.openSidebar()">☰</button>
-                <button class="logout-btn" onclick="appState.logout()">🚪 Sair</button>
+                <button class="logout-btn" onclick="appState.logout()">Sair</button>
             </div>
 
             <!-- VIEW: DASHBOARD -->
@@ -1062,15 +1062,15 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-label">Views Totais</div>
-                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
+                        <div class="metric-value" style="font-size: 16px;">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Engajamento</div>
-                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
+                        <div class="metric-value" style="font-size: 16px;">Em breve</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-label">Taxa de Conversão</div>
-                        <div class="metric-value" style="font-size: 22px;">Em breve</div>
+                        <div class="metric-value" style="font-size: 16px;">Em breve</div>
                     </div>
                 </div>
             </div>
