@@ -380,8 +380,8 @@
             right: 20px;
             padding: 10px;
             background: transparent;
-            color: #ff6b6b;
-            border: 1px solid #ff6b6b;
+            color: #a855f7;
+            border: 1px solid #a855f7;
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
@@ -626,6 +626,7 @@
             border-color: #7c3aed !important;
             color: #fff !important;
         }
+        input[type="text"],
         input[type="email"],
         input[type="password"],
         select,
@@ -651,9 +652,10 @@
             border-color: #a855f7;
         }
 
+        input[type="text"]::placeholder,
         input::placeholder,
         textarea::placeholder {
-            color: #6a6a8a;
+            color: #8a8aaa;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
@@ -900,7 +902,7 @@
 
         <div class="main-container">
             <div class="dashboard-header">
-                <h1 class="dashboard-title">📊 Dashboard</h1>
+                <h1 class="dashboard-title"><span class="gradient-text">⚡ InovaShot</span></h1>
                 <button class="menu-toggle" onclick="appState.openSidebar()">☰</button>
                 <button class="logout-btn" onclick="appState.logout()">🚪 Sair</button>
             </div>
@@ -1079,8 +1081,8 @@
                 <p style="color:#a0a0c0; font-size:15px; margin-bottom:28px; padding-bottom:16px; border-bottom:1px solid #2d2458;">Central de campanha inteligente para o InovaShot.</p>
 
                 <!-- S.O.S. -->
-                <div style="background:#1e1650; border:1px solid #ff4444; border-radius:12px; padding:20px; margin-bottom:16px;">
-                    <h3 style="color:#ff4444; font-size:16px; font-weight:700; margin-bottom:4px;">🚨 Botão S.O.S.</h3>
+                <div style="background:#1e1650; border:1px solid #f0a500; border-radius:12px; padding:20px; margin-bottom:16px;">
+                    <h3 style="color:#f0a500; font-size:16px; font-weight:700; margin-bottom:4px;">🚨 Botão S.O.S.</h3>
                     <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Acionamento de emergência — entrega em 60 minutos</p>
                     <input type="text" id="sosWhatsapp" placeholder="Link do WhatsApp S.O.S. (ex: https://wa.me/5599...)" style="margin-bottom:12px;">
                     <a id="sosBtn" href="#" target="_blank" onclick="return appState.openSOS()" style="display:block; text-align:center; background:#ff4444; color:#fff; font-weight:700; border-radius:8px; padding:12px; font-size:15px; cursor:pointer; text-decoration:none;">🚨 Acionar Emergência</a>
@@ -1113,9 +1115,9 @@
                 <div style="background:#1e1650; border:1px solid #3b2f6e; border-radius:12px; padding:20px; margin-bottom:16px;">
                     <h3 style="color:#fff; font-size:16px; font-weight:700; margin-bottom:4px;">⚖️ Guia Jurídico-Eleitoral</h3>
                     <p style="color:#a0a0c0; font-size:15px; margin-bottom:14px;">Palavras monitoradas automaticamente em cada transcrição</p>
-                    <label style="color:#f87171; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">🚫 Palavras proibidas</label>
+                    <label style="color:#c084fc; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">⚠️ Palavras proibidas</label>
                     <textarea id="palavrasProibidas" placeholder="Uma por linha. Ex:&#10;corrupto&#10;bandido" style="width:100%; min-height:80px; resize:vertical; margin-bottom:12px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#ffffff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
-                    <label style="color:#4ade80; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">✅ Palavras recomendadas</label>
+                    <label style="color:#818cf8; font-size:15px; font-weight:600; display:block; margin-bottom:6px;">✦ Palavras recomendadas</label>
                     <textarea id="palavrasRecomendadas" placeholder="Uma por linha. Ex:&#10;proposta&#10;compromisso" style="width:100%; min-height:80px; resize:vertical; margin-bottom:14px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:15px; background:#0e0820; color:#ffffff; border:1px solid #3b2f6e; border-radius:8px; padding:10px;"></textarea>
                     <button onclick="appState.salvarGuiaJuridico()" style="width:100%; background:#a855f7; color:#fff; border:none; border-radius:8px; padding:12px; font-weight:700; cursor:pointer; font-size:15px;">💾 Salvar Guia</button>
                 </div>
