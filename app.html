@@ -605,6 +605,43 @@
         textarea::placeholder {
             color: #6a6a8a;
         }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select,
+        textarea {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+            font-size: 15px;
+            background: #0e0820;
+            color: #e0e0ff;
+            border: 1px solid #3b2f6e;
+            border-radius: 10px;
+            padding: 12px 14px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #a855f7;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #6a6a8a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        select option {
+            background: #16103a;
+            color: #e0e0ff;
+        }
             background: #2d2458;
             color: #a0a0c0;
             border: 1px solid #3b2f6e;
