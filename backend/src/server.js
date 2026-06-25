@@ -344,25 +344,38 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
       }
 
       // Salvar clip no banco
-      const { error: insertError } = await supabase.from('clips').insert({
+      const clipData = {
         id: clipId,
         job_id,
         user_id,
-        title: `Clip - ${moment.reason}`,
-        reason: moment.reason,
-        start_time: moment.start,
-        end_time: moment.end,
-        duration: moment.end - moment.start,
-        storage_url: storagePath,
-        virality_score: moment.score ?? null,
+        title: `Clip - ${moment.reason || 'Clip gerado'}`,
+        reason: moment.reason || 'Clip gerado',
+        duration: Math.round((moment.end || 30) - (moment.start || 0)),
+        storage_url: storagePath || clipId,
         hook_a: moment.hook_a || null,
         hook_b: moment.hook_b || null,
-      });
+      };
+      
+      logger(`Inserting clip data: ${JSON.stringify(clipData)}`);
+      const { data: insertedClip, error: insertError } = await supabase.from('clips').insert(clipData).select();
 
       if (insertError) {
-        logger(`ERROR inserting clip: ${insertError.message}`);
+        logger(`ERROR inserting clip: ${JSON.stringify(insertError)}`);
+        // Tentar insert simplificado sem campos opcionais
+        const { error: simpleError } = await supabase.from('clips').insert({
+          id: clipId,
+          job_id,
+          user_id,
+          title: 'Clip gerado',
+          storage_url: storagePath || clipId,
+        });
+        if (simpleError) {
+          logger(`Simple insert also failed: ${JSON.stringify(simpleError)}`);
+        } else {
+          logger(`Clip saved with simple insert: ${clipId}`);
+        }
       } else {
-        logger(`Clip saved to DB: ${clipId}`);
+        logger(`Clip saved to DB successfully: ${clipId}`);
       }
 
       clipIds.push(clipId);
