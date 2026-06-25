@@ -308,14 +308,20 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
 
       // 5. UPLOAD PARA SUPABASE STORAGE
       logger(`Uploading clip ${clipId} to storage...`);
-      const storagePath = await uploadClipToStorage(
-        clipPath,
-        user_id,
-        clipId
-      );
+      let storagePath = null;
+      try {
+        storagePath = await uploadClipToStorage(
+          clipPath,
+          user_id,
+          clipId
+        );
+      } catch (storageErr) {
+        logger(`Storage upload failed (continuing): ${storageErr.message}`);
+        storagePath = clipPath; // usar caminho local como fallback
+      }
 
       // Salvar clip no banco
-      await supabase.from('clips').insert({
+      const { error: insertError } = await supabase.from('clips').insert({
         id: clipId,
         job_id,
         user_id,
@@ -329,6 +335,12 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
         hook_a: moment.hook_a || null,
         hook_b: moment.hook_b || null,
       });
+
+      if (insertError) {
+        logger(`ERROR inserting clip: ${insertError.message}`);
+      } else {
+        logger(`Clip saved to DB: ${clipId}`);
+      }
 
       clipIds.push(clipId);
       logger(`Clip created: ${clipId}`);
