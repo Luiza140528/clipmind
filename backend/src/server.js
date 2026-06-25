@@ -372,14 +372,36 @@ async function downloadVideo(url, job_id) {
   const outputPath = `/tmp/${job_id}.mp4`;
 
   try {
-    // Usar yt-dlp pra baixar
-    const command = `yt-dlp -f best -o "${outputPath}" "${url}"`;
-    await execAsync(command, { timeout: 300000 }); // 5 minutos timeout
-    logger(`Video downloaded: ${outputPath}`);
+    // Verificar se yt-dlp está disponível
+    await execAsync('which yt-dlp || python3 -m yt_dlp --version');
+    
+    // Tentar com yt-dlp
+    const ytdlpCmd = `yt-dlp -f "best[ext=mp4]/best" --no-playlist -o "${outputPath}" "${url}"`;
+    logger(`Iniciando download: ${url}`);
+    await execAsync(ytdlpCmd, { timeout: 300000 });
+    
+    if (!fs.existsSync(outputPath)) {
+      throw new Error('Arquivo não foi criado após download');
+    }
+    
+    logger(`Download concluído: ${outputPath}`);
     return outputPath;
   } catch (error) {
-    logger(`Download failed: ${error.message}`);
-    throw new Error('Failed to download video');
+    logger(`Erro no download: ${error.message}`);
+    
+    // Tentar com python3 -m yt_dlp como fallback
+    try {
+      const fallbackCmd = `python3 -m yt_dlp -f "best[ext=mp4]/best" --no-playlist -o "${outputPath}" "${url}"`;
+      await execAsync(fallbackCmd, { timeout: 300000 });
+      if (fs.existsSync(outputPath)) {
+        logger(`Download via fallback concluído`);
+        return outputPath;
+      }
+    } catch (fallbackError) {
+      logger(`Fallback também falhou: ${fallbackError.message}`);
+    }
+    
+    throw new Error(`Falha no download do vídeo: ${error.message}`);
   }
 }
 
@@ -471,7 +493,7 @@ async function analyzeWithClaude(transcript, config = {}) {
   };
 
   try {
-    const { Anthropic } = await import('@anthropic-ai/sdk');
+    const Anthropic = require('@anthropic-ai/sdk');
     const client = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
