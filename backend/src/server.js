@@ -687,7 +687,7 @@ async function uploadClipToStorage(clipPath, user_id, clipId) {
     const storagePath = `${user_id}/${clipId}.mp4`;
 
     const { error } = await supabase.storage
-      .from('clipmind-videos')
+      .from('clips')
       .upload(storagePath, fileData, {
         contentType: 'video/mp4',
         upsert: true,
@@ -780,7 +780,7 @@ app.delete('/api/clips/:clip_id', authenticateUser, async (req, res) => {
 
     // Deletar do storage
     const storagePath = clipData.storage_url.split('/').slice(-2).join('/');
-    await supabase.storage.from('clipmind-videos').remove([storagePath]);
+    await supabase.storage.from('clips').remove([storagePath]);
 
     // Deletar do banco
     await supabase.from('clips').delete().eq('id', clip_id);
@@ -909,7 +909,7 @@ app.get('/c/:clip_id', async (req, res) => {
     }
 
     const { data: signed, error: signError } = await supabase.storage
-      .from('clipmind-videos')
+      .from('clips')
       .createSignedUrl(clip.storage_url, 60 * 60 * 24 * 7); // 7 dias
 
     if (signError || !signed) {
