@@ -493,7 +493,7 @@ async function analyzeWithClaude(transcript, config = {}) {
   };
 
   try {
-    const { Anthropic } = await import('@anthropic-ai/sdk');
+    const Anthropic = require('@anthropic-ai/sdk');
     const client = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
