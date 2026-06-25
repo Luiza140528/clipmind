@@ -285,12 +285,35 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
 
     // 3. ANÁLISE (CLAUDE HAIKU) - Identificar momentos
     logger(`Analyzing moments...`);
+    
+    // Obter duração real do vídeo
+    let videoDuration = 999;
+    try {
+      const { stdout } = await execAsync(`ffprobe -v quiet -show_entries format=duration -of csv=p=0 "${videoPath}"`);
+      videoDuration = parseFloat(stdout.trim());
+      logger(`Video duration: ${videoDuration}s`);
+    } catch (e) {
+      logger(`Could not get video duration: ${e.message}`);
+    }
+
     const moments = await analyzeWithClaude(transcript, config);
+    
+    // Filtrar momentos que ultrapassam a duração do vídeo
+    const validMoments = moments.filter(m => m.start < videoDuration).map(m => ({
+      ...m,
+      start: Math.max(0, m.start),
+      end: Math.min(videoDuration - 0.5, m.end),
+    }));
+    
+    logger(`Valid moments after duration check: ${validMoments.length}/${moments.length}`);
+    const finalMoments = validMoments.length > 0 ? validMoments : [
+      { index: 1, start: 0, end: videoDuration - 0.5, reason: 'Clip completo', appeal: 'promessa', score: 5 }
+    ];
 
     // 4. GERAR CORTES (FFMPEG)
     logger(`Generating clips...`);
     const clipIds = [];
-    for (const moment of moments) {
+    for (const moment of finalMoments) {
       const clipId = `clip_${job_id}_${moment.index}`;
 
       // Filtrar as palavras que caem dentro deste clip (para legendas animadas)
@@ -587,11 +610,9 @@ Ambos os hooks devem ter no máximo 15 palavras e ser escritos em português bra
     return parsed.moments || [];
   } catch (error) {
     logger(`Claude analysis error: ${error.message}`);
-    // Fallback: retornar momentos básicos se Claude falhar
+    // Fallback: retornar o vídeo inteiro como um clip
     return [
-      { index: 1, start: 30, end: 60, reason: 'Momento político importante', appeal: 'promessa', score: 5 },
-      { index: 2, start: 120, end: 150, reason: 'Posicionamento claro', appeal: 'força', score: 5 },
-      { index: 3, start: 200, end: 230, reason: 'Crítica bem colocada', appeal: 'crítica', score: 5 },
+      { index: 1, start: 0, end: 999, reason: 'Momento completo do discurso', appeal: 'promessa', score: 5 },
     ];
   }
 }
