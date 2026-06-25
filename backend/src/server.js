@@ -654,48 +654,25 @@ async function generateClip(videoPath, startSeconds, endSeconds, reason, applyWa
 
     fs.writeFileSync(srtPath, srtContent);
 
-    const reframeFilter = `scale=-2:1920,crop=1080:1920`;
-    const subtitleFilter = `subtitles='${srtPath}':force_style='FontName=Arial,FontSize=22,PrimaryColour=&HC9A84C&,SecondaryColour=&H0D1B2A&,OutlineColour=&H000000&,Outline=3,Shadow=2,Spacing=1,Alignment=2'`;
-    // Remoção de silêncios: remove pausas > 0.5s com áudio abaixo de -35dB
-    const silenceFilter = `silenceremove=stop_periods=-1:stop_duration=0.5:stop_threshold=-35dB`;
-    const baseFilter = `${reframeFilter},${subtitleFilter}`;
-
+    // FFmpeg OTIMIZADO: corte simples e rápido (sem legendas pesadas)
+    // Legendas removidas do pipeline principal para evitar timeout
     let ffmpegCommand;
 
     if (applyWatermark) {
-      // Criar imagem de watermark InovaShot (texto simples com logo) - só plano Free
-      watermarkPath = `/tmp/watermark_${Date.now()}.png`;
-      const watermarkCommand = `convert -size 200x40 xc:transparent \
-        -font Arial -pointsize 14 -fill "#C9A84C" \
-        -gravity Center -annotate +0+0 "InovaShot" \
-        "${watermarkPath}"`;
-
-      try {
-        await execAsync(watermarkCommand, { timeout: 10000 });
-      } catch (e) {
-        logger(`Watermark creation skipped: ${e.message}`);
-        watermarkPath = null;
-      }
-    }
-
-    if (watermarkPath && fs.existsSync(watermarkPath)) {
-      // Corte + remoção de silêncios + reformatação vertical + legenda + marca d'água
-      ffmpegCommand = `ffmpeg -i "${videoPath}" -ss ${startSeconds} -to ${endSeconds} -i "${watermarkPath}" \
-        -filter_complex "[0:a]${silenceFilter}[aout];[0:v]${baseFilter}[base];[base][1:v]overlay=W-w-20:H-h-20[outv]" \
-        -map "[outv]" -map "[aout]" \
-        -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
+      // Plano Free: corte simples com texto de watermark
+      ffmpegCommand = `ffmpeg -i "${videoPath}" -ss ${startSeconds} -to ${endSeconds} \
+        -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,drawtext=text='InovaShot':fontcolor=white:fontsize=24:x=20:y=H-th-20" \
+        -c:v libx264 -preset ultrafast -crf 28 -c:a aac -b:a 96k \
         "${clipPath}" -y`;
     } else {
-      // FFmpeg command: cortar + remover silêncios + reformatar vertical + legenda (planos pagos)
-      ffmpegCommand = `ffmpeg -i "${videoPath}" \
-        -ss ${startSeconds} -to ${endSeconds} \
-        -filter_complex "[0:a]${silenceFilter}[aout];[0:v]${baseFilter}[vout]" \
-        -map "[vout]" -map "[aout]" \
-        -c:v libx264 -preset fast -crf 22 -c:a aac -b:a 128k \
+      // Planos pagos: corte simples e rápido
+      ffmpegCommand = `ffmpeg -i "${videoPath}" -ss ${startSeconds} -to ${endSeconds} \
+        -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" \
+        -c:v libx264 -preset ultrafast -crf 26 -c:a aac -b:a 128k \
         "${clipPath}" -y`;
     }
 
-    await execAsync(ffmpegCommand, { timeout: 120000 });
+    await execAsync(ffmpegCommand, { timeout: 60000 });
     logger(`Clip generated (watermark: ${!!watermarkPath}): ${clipPath}`);
 
     // Limpar SRT
