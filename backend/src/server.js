@@ -296,7 +296,7 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
       logger(`Could not get video duration: ${e.message}`);
     }
 
-    const moments = await analyzeWithClaude(transcript, config);
+    const moments = await analyzeWithClaude(transcript, config, videoDuration);
     
     // Filtrar momentos que ultrapassam a duração do vídeo
     const validMoments = moments.filter(m => m.start < videoDuration).map(m => ({
@@ -500,7 +500,7 @@ async function transcribeVideo(videoPath) {
 }
 
 // Analisar com Claude Haiku (OTIMIZADO PARA POLÍTICO)
-async function analyzeWithClaude(transcript, config = {}) {
+async function analyzeWithClaude(transcript, config = {}, videoDuration = 999) {
   const { objetivo = 'viralizar', tom = 'dinamico', destino = 'todos' } = config;
 
   const objetivoMap = {
@@ -541,12 +541,14 @@ CONFIGURAÇÃO DO CLIENTE:
 - Tom desejado: ${tomMap[tom] || tom}
 - Destino: ${destinoMap[destino] || destino}
 
+Duração total do vídeo: ${Math.round(videoDuration)} segundos
+
 Transcrição do vídeo:
 """
 ${transcript}
 """
 
-TAREFA: Com base na configuração acima, identifique os 5-7 MELHORES momentos para cortar.
+TAREFA: Com base na configuração acima, identifique os 3-5 MELHORES momentos para cortar. IMPORTANTE: O vídeo tem ${Math.round(videoDuration)} segundos. Todos os timestamps start/end devem estar entre 0 e ${Math.round(videoDuration)}.
 
 CRITÉRIOS (adaptados ao objetivo "${objetivo}" e tom "${tom}"):
 1. FORÇA E CONVICÇÃO - Tom decisivo, sem hesitação
