@@ -987,7 +987,7 @@ app.post('/api/pagamento/checkout', authenticateUser, async (req, res) => {
                 },
                 auto_return: 'approved',
                 external_reference: `${userId}|${plano}`,
-                notification_url: `https://clipmind-xxgn.onrender.com/api/pagamento/webhook`,
+                notification_url: `https://inovashot.onrender.com/api/pagamento/webhook`,
             },
             {
                 headers: {
