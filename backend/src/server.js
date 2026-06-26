@@ -343,39 +343,27 @@ async function processVideoAsync(job_id, user_id, youtube_url, existingVideoPath
         storagePath = clipPath; // usar caminho local como fallback
       }
 
-      // Salvar clip no banco
-      const clipData = {
-        id: clipId,
-        job_id,
-        user_id,
-        title: `Clip - ${moment.reason || 'Clip gerado'}`,
-        reason: moment.reason || 'Clip gerado',
-        duration: Math.round((moment.end || 30) - (moment.start || 0)),
-        storage_url: storagePath || clipId,
-        hook_a: moment.hook_a || null,
-        hook_b: moment.hook_b || null,
-      };
-      
-      logger(`Inserting clip data: ${JSON.stringify(clipData)}`);
-      const { data: insertedClip, error: insertError } = await supabase.from('clips').insert(clipData).select();
-
-      if (insertError) {
-        logger(`ERROR inserting clip: ${JSON.stringify(insertError)}`);
-        // Tentar insert simplificado sem campos opcionais
-        const { error: simpleError } = await supabase.from('clips').insert({
+      // Salvar clip no banco - versão robusta
+      try {
+        const { error: insertError } = await supabase.from('clips').insert({
           id: clipId,
           job_id,
           user_id,
-          title: 'Clip gerado',
+          title: `Clip - ${moment.reason || 'Clip gerado'}`,
+          reason: moment.reason || 'Clip gerado',
+          duration: Math.round((moment.end || 30) - (moment.start || 0)),
           storage_url: storagePath || clipId,
+          hook_a: moment.hook_a || null,
+          hook_b: moment.hook_b || null,
         });
-        if (simpleError) {
-          logger(`Simple insert also failed: ${JSON.stringify(simpleError)}`);
+
+        if (insertError) {
+          logger(`ERROR inserting clip (code: ${insertError.code}): ${insertError.message} | details: ${insertError.details}`);
         } else {
-          logger(`Clip saved with simple insert: ${clipId}`);
+          logger(`✅ Clip saved successfully: ${clipId}`);
         }
-      } else {
-        logger(`Clip saved to DB successfully: ${clipId}`);
+      } catch (insertEx) {
+        logger(`EXCEPTION inserting clip: ${insertEx.message}`);
       }
 
       clipIds.push(clipId);
