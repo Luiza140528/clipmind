@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como transformar vídeo longo do YouTube em Shorts automaticamente com IA | InovaShot</title>
+    <meta name="description" content="Descubra como transformar um vídeo longo do YouTube em Shorts, Reels e TikTok de forma 100% automática usando Inteligência Artificial. Ganhe tempo na edição!">
+    <meta name="keywords" content="transformar vídeo longo em shorts, cortar vídeo youtube automaticamente, como fazer shorts do youtube, editor de vídeo com IA, criar shorts com IA">
+    <link rel="canonical" href="https://inovashot.com.br/blog/como-transformar-video-longo-youtube-em-shorts">
+    <meta property="og:title" content="Como transformar vídeo longo do YouTube em Shorts automaticamente com IA">
+    <meta property="og:description" content="Passo a passo para transformar vídeos longos em Shorts, Reels e TikTok em menos de 5 minutos usando IA.">
+    <meta property="og:url" content="https://inovashot.com.br/blog/como-transformar-video-longo-youtube-em-shorts">
+    <meta property="og:type" content="article">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Como transformar vídeo longo do YouTube em Shorts automaticamente com IA",
+      "description": "Passo a passo para transformar vídeos longos em Shorts, Reels e TikTok em menos de 5 minutos usando Inteligência Artificial.",
+      "author": { "@type": "Organization", "name": "InovaShot" },
+      "publisher": { "@type": "Organization", "name": "InovaShot", "url": "https://inovashot.com.br" },
+      "datePublished": "2026-07-01",
+      "mainEntityOfPage": "https://inovashot.com.br/blog/como-transformar-video-longo-youtube-em-shorts"
+    }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0e0820;
+            --card: #1e1650;
+            --neon2: #a855f7;
+            --neon1: #f472b6;
+            --neon3: #38bdf8;
+            --text: #ffffff;
+            --muted: #a0a0c0;
+            --border: #3b2f6e;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #f472b6, #a855f7, #38bdf8, #f472b6);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+            display: inline-block;
+        }
+
+        header {
+            padding: 18px 40px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(14, 8, 32, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            text-decoration: none;
+        }
+
+        .nav-cta {
+            background: #a855f7;
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .nav-cta:hover { background: #c084fc; }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 32px;
+        }
+
+        .breadcrumb a {
+            color: #a855f7;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover { text-decoration: underline; }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .article-meta {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 40px 0 16px;
+            color: #ffffff;
+        }
+
+        h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 28px 0 12px;
+            color: #c084fc;
+        }
+
+        p { margin-bottom: 20px; color: #d0d0e8; }
+
+        .highlight-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .highlight-box p { margin-bottom: 0; color: #ffffff; }
+
+        .steps {
+            counter-reset: step;
+            margin: 24px 0;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 24px;
+            align-items: flex-start;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #38bdf8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            flex-shrink: 0;
+            color: #fff;
+        }
+
+        .step-content h3 {
+            margin: 0 0 8px;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .step-content p { margin-bottom: 0; font-size: 15px; }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .benefit-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .benefit-icon { font-size: 28px; margin-bottom: 10px; }
+        .benefit-title { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+        .benefit-text { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+        .cta-box {
+            background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(56,189,248,0.1));
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin: 48px 0;
+        }
+
+        .cta-box h2 { margin-top: 0; }
+
+        .cta-box p { color: var(--muted); margin-bottom: 24px; }
+
+        .btn-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #f472b6, #a855f7, #38bdf8);
+            color: #fff;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 14px 36px;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.6);
+        }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px;
+            text-align: center;
+        }
+
+        footer p { color: var(--muted); font-size: 14px; margin: 8px 0; }
+        footer a { color: #a855f7; text-decoration: none; }
+
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .container { padding: 40px 20px; }
+            h1 { font-size: 26px; }
+            h2 { font-size: 20px; }
+            .cta-box { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="/" class="logo"><span class="gradient-text">⚡ InovaShot</span></a>
+        <a href="/app.html#login" class="nav-cta">Começar Grátis</a>
+    </nav>
+</header>
+
+<main class="container">
+
+    <div class="breadcrumb">
+        <a href="/">InovaShot</a> › <a href="/blog">Blog</a> › Como transformar vídeo longo em Shorts
+    </div>
+
+    <h1>Como transformar vídeo longo do YouTube em Shorts automaticamente com IA</h1>
+
+    <div class="article-meta">
+        Publicado em 1 de julho de 2026 · Leitura: 4 minutos · InovaShot
+    </div>
+
+    <p>Se você produz conteúdo para a internet, já sabe que o formato vertical é o que mais traz novos seguidores hoje em dia. Porém, encontrar os melhores momentos de um conteúdo extenso, cortar no formato 9:16 e legendar tudo manualmente exige horas de trabalho exaustivo.</p>
+
+    <p>A boa notícia é que você não precisa mais fazer isso do jeito difícil. Hoje, já é possível transformar vídeo longo do YouTube em Shorts de forma 100% automática usando Inteligência Artificial — em menos de 5 minutos.</p>
+
+    <div class="highlight-box">
+        <p><strong>Resumo rápido:</strong> Cole o link do YouTube no InovaShot, a IA identifica os melhores momentos, corta em formato 9:16 e entrega com legendas sincronizadas. Do upload ao download em menos de 5 minutos.</p>
+    </div>
+
+    <h2>Por que criar Shorts a partir de vídeos longos?</h2>
+
+    <p>Canais que postam vídeos longos e Shorts na mesma conta crescem significativamente mais rápido. Os Shorts funcionam como uma vitrine: alcançam pessoas que nunca ouviram falar do seu canal e as convidam para assistir aos seus conteúdos mais densos.</p>
+
+    <p>O grande desafio sempre foi o tempo gasto na edição manual. Um podcast de 1 hora pode render mais de 10 Shorts virais — mas selecionar, cortar, reformatar e legendar cada um manualmente pode levar uma tarde inteira. A tecnologia mudou esse jogo.</p>
+
+    <h2>Passo a passo para transformar vídeos longos em Shorts automaticamente</h2>
+
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Copie o link do seu vídeo no YouTube</h3>
+                <p>Vá até o seu canal e copie a URL do vídeo longo direto da barra de endereços. Funciona com qualquer vídeo público: podcast, live, entrevista, aula ou discurso.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>Cole a URL no InovaShot</h3>
+                <p>Acesse o InovaShot, cole o link no campo indicado e configure o objetivo do clip — viralizar, educar, campanha política, ou outro formato. A IA começa a processar imediatamente.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>A IA seleciona os melhores momentos</h3>
+                <p>O algoritmo analisa o áudio com Whisper e usa o Claude Haiku para identificar os ganchos de maior retenção — frases impactantes, histórias, viradas de argumento. Cada momento recebe uma nota de viralidade de 0 a 10.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <h3>Exporte com legendas dinâmicas</h3>
+                <p>Os clips saem em formato vertical 9:16, com legendas animadas palavra por palavra, sincronizadas com precisão com a fala do apresentador. Prontos para postar no TikTok, Reels e YouTube Shorts.</p>
+            </div>
+        </div>
+    </div>
+
+    <h2>Vantagens de usar IA para criar Shorts</h2>
+
+    <div class="benefits-grid">
+        <div class="benefit-card">
+            <div class="benefit-icon">⚡</div>
+            <div class="benefit-title">Velocidade</div>
+            <div class="benefit-text">O que levava uma tarde inteira de edição manual fica pronto em menos de 5 minutos.</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">🎯</div>
+            <div class="benefit-title">Precisão nos ganchos</div>
+            <div class="benefit-text">A IA analisa tom de voz e palavras-chave para garantir que o Short comece no momento mais impactante.</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">💬</div>
+            <div class="benefit-title">Legendas automáticas</div>
+            <div class="benefit-text">Transcrição completa com Whisper, sincronizada palavra por palavra, com alta precisão no português.</div>
+        </div>
+        <div class="benefit-card">
+            <div class="benefit-icon">💰</div>
+            <div class="benefit-title">Custo-benefício</div>
+            <div class="benefit-text">Ideal para criadores independentes que não podem contratar um editor profissional em tempo integral.</div>
+        </div>
+    </div>
+
+    <h2>Para quem é essa solução?</h2>
+
+    <p>O InovaShot foi desenvolvido especialmente para três perfis de criadores:</p>
+
+    <h3>Podcasters e entrevistadores</h3>
+    <p>Um episódio de 1 hora pode render 8 a 12 Shorts em uma única geração. A IA identifica as respostas mais impactantes das entrevistas e os momentos de maior intensidade emocional da conversa.</p>
+
+    <h3>Canais de cortes</h3>
+    <p>Se você gerencia um canal Dark ou um canal de cortes, o InovaShot multiplica sua velocidade de postagem diária sem precisar assistir ao vídeo inteiro para encontrar os melhores momentos.</p>
+
+    <h3>Comunicadores políticos</h3>
+    <p>O Módulo Político do InovaShot foi treinado para identificar ganchos de retenção em discursos, debates e propostas — com entrega S.O.S. em até 60 minutos para situações de emergência de campanha.</p>
+
+    <h2>InovaShot vs. editores tradicionais</h2>
+
+    <p>Um editor de vídeo tradicional como o Premiere ou o CapCut exige que você assista ao conteúdo, marque os cortes manualmente, ajuste o formato para 9:16, adicione legendas e exporte cada clip individualmente. Para um podcast de 1 hora com 10 Shorts, esse processo pode levar entre 4 e 8 horas.</p>
+
+    <p>Com o InovaShot, o mesmo trabalho leva menos de 5 minutos. Você cola o link, define o objetivo e a plataforma entrega os clips prontos para postar.</p>
+
+    <div class="cta-box">
+        <h2>Teste o InovaShot gratuitamente</h2>
+        <p>Não deixe seu conteúdo antigo morrer no esquecimento. Cole o link do seu primeiro vídeo do YouTube e veja a IA trabalhar em tempo real — sem precisar cadastrar cartão de crédito.</p>
+        <a href="/app.html#login" class="btn-cta">🚀 Começar Grátis Agora</a>
+    </div>
+
+    <h2>Perguntas frequentes</h2>
+
+    <h3>Preciso saber editar vídeo para usar o InovaShot?</h3>
+    <p>Não. O processo inteiro é automatizado. Se você consegue colar um link, consegue usar a plataforma.</p>
+
+    <h3>Quantos Shorts posso gerar de graça?</h3>
+    <p>O plano gratuito permite criar até 3 clips por mês sem custo. Para volumes maiores, os planos pagos começam em R$ 49,90 por mês.</p>
+
+    <h3>Funciona com vídeos em português?</h3>
+    <p>Sim. O Whisper, modelo de transcrição da OpenAI integrado ao InovaShot, tem alta precisão no português brasileiro. As legendas saem com sincronização palavra por palavra.</p>
+
+    <h3>O InovaShot é uma alternativa ao Opus Clip?</h3>
+    <p>Sim. O InovaShot é uma alternativa nacional ao Opus Clip e ao Vidyo.ai, desenvolvida para criadores brasileiros, com preços em reais e suporte ao português.</p>
+
+</main>
+
+<footer>
+    <p><span class="gradient-text" style="font-size: 18px; font-weight: 800;">⚡ InovaShot</span></p>
+    <p style="margin-top: 10px;">High-Retention Short-Form Video com IA</p>
+    <p style="margin-top: 16px;">
+        <a href="/">Início</a> ·
+        <a href="/blog">Blog</a> ·
+        <a href="/app.html#login">Entrar</a> ·
+        <a href="mailto:contato@inovashot.pro">contato@inovashot.pro</a>
+    </p>
+    <p style="margin-top: 12px; font-size: 12px; color: #4a4060;">© 2026 InovaShot — Todos os direitos reservados</p>
+</footer>
+
+</body>
+</html>
